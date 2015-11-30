@@ -54,9 +54,6 @@
     <ClCompile Include="ForestClassification.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="ForestProbability.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="ForestRegression.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -64,9 +61,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Quelle1.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Tree.cpp">
@@ -82,6 +76,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="TreeSurvival.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ForestProbability.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="utility.cpp">

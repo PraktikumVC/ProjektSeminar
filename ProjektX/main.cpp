@@ -91,7 +91,9 @@
 #include "ForestSurvival.h"
 #include "ForestProbability.h"
 
-int main(int argc, char **argv) {	
+#include "Speicher.h"
+
+int mainY(int argc, char **argv) {	
 
 
   //Beschreibung für die Variablen: S.o.
@@ -103,7 +105,7 @@ int main(int argc, char **argv) {
   std::string predict="";
   std::string splitweights="";
   uint nthreads=DEFAULT_NUM_THREADS;
-
+  std::string ordner = "";
   // All command line arguments as member: Small letters
   std::vector<std::string> catvars;
   std::string file="";
@@ -120,7 +122,20 @@ int main(int argc, char **argv) {
   bool write= false;
   TreeType treetype=TREE_CLASSIFICATION;
   uint seed=0;
-
+  Speicher Speicher;
+  Speicher.verzeichnis = "C:\\Training\\";
+  Speicher.SetFolder("object0005.view01\\MSER\\0");
+  Speicher.ReadText("C:\\Training\\object0005.view01\\MSER\\0","0.sift");
+  cv::Mat image =cv::imread("0.jpg",0);  
+  std::vector<std::string> datfile;
+  std::string spacer= "";
+  int c; int r;
+  for (c=0,r=0; c < image.cols,r<image.rows; ++c,++r)
+	  datfile.at(0)= datfile.at(0)+spacer+std::to_string(image.at<double>(c, r));
+  cv::namedWindow("image");
+  cv::imshow("image", image);
+  cv::waitKey(0);
+  /*
   Forest* forest = 0;
   try {
 
@@ -180,6 +195,6 @@ int main(int argc, char **argv) {
     delete forest;
     return -1;
   }
-
+  */
   return 0;
 }

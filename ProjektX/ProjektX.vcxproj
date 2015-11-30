@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="App.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="DataChar.cpp" />
     <ClCompile Include="DataDouble.cpp" />
@@ -138,7 +139,6 @@
     <ClCompile Include="KeyPointProjektor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mathe.cpp" />
-    <ClCompile Include="Quelle1.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Projektion.cpp" />
     <ClCompile Include="BerechnungKeypoints.cpp" />

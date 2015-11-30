@@ -15,7 +15,7 @@ using namespace cv;
 using namespace std;
 
 
-int main(int argc, char *argv[])
+int mainS(int argc, char *argv[])
 {
 		//Variablen für Test erzeugen
 		Mat image = imread("adam1.png", 0);
@@ -85,6 +85,18 @@ int main(int argc, char *argv[])
 		//Speichern
 		//Speicher.Save(imageOut, image,ad,s2);
 	
+		
+		Speicher.verzeichnis = "C:\\Training\\";
+		Speicher.SetFolder("object0005.view01\\MSER\\0");
+		image = cv::imread("0.jpg", 0);
+		cv::namedWindow("image");
+		cv::imshow("image", image);
+		std::vector<std::string> datfile;
+		std::string spacer = "";
+		int c; int r;
+		for (c = 0, r=0; c < image.cols, r<image.rows; ++c, ++r)
+			datfile.at(0) = datfile.at(0) + spacer + std::to_string(image.at<double>(c, r));
+
 				
 		//extra Anzeige erzeugen und Bild darstellen
 		namedWindow("image");

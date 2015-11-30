@@ -4,6 +4,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
+#include <string>
 #include <stdio.h>
 #include <sddl.h>
 #include <stdio.h>
@@ -11,6 +12,8 @@
 #include <aclapi.h>
 #include <tchar.h>
 #include <Shlwapi.h>
+#include <fstream>
+#include <vector>
 
 
 Speicher::Speicher()
@@ -49,6 +52,31 @@ bool Speicher::SetFolder(std::string ordner)
 	std::cout << "SetFolder erfolgreich" << buf << std::endl;
 	return true;
 }
+/**
+Einlesen von Textdokumenten, zb SIFT
+*/
+std::vector<std::string> Speicher::ReadText(std::string directory, std::string file)
+{
+	std::string buf = "C:\\VC\\Training\\MLM\\MLM\\ZuBuD\\object0001.view03\\Hessian-Affine\\0";
+	LPSTR curDirectory = const_cast<char *> (directory.c_str());
+	//als Arbeitsumgebung setzen
+	SetCurrentDirectory(curDirectory);
+	std::vector<std::string> lines;
+	std::string line;
+	std::string buff = "0.sift";
+	std::ifstream myfile(file);
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			lines.push_back(line);
+		}
+		myfile.close();
+	}
+	else std::cout << "Unable to open file";
+	system("pause");
 
+	return lines;
+}
 
 

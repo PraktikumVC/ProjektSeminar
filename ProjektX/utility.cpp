@@ -37,10 +37,13 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <numeric>
 
 #include "utility.h"
 #include "globals.h"
 #include "Data.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 void equalSplit(std::vector<uint>& result, uint start, uint end, uint num_parts) {
 
@@ -328,7 +331,7 @@ void shuffleAndSplit(std::vector<size_t>& first_part, std::vector<size_t>& secon
   first_part.resize(n_all);
 
   // Fill with 0..n_all-1 and shuffle
-  std::iota(first_part.begin(), first_part.end(), 0);
+  iota(first_part.begin(), first_part.end(), 0);
   std::shuffle(first_part.begin(), first_part.end(), random_number_generator);
 
   // Copy to second part
