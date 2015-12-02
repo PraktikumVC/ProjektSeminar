@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int main() {
+int mainxD() {
 	Speicher Speicher;
 	Speicher.SetFolder("VC\\Training\\MLM\\MLM\\ZuBuD\\object0001.view03\\Hessian-Affine\\0");
 	string line;

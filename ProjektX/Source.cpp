@@ -14,7 +14,7 @@
 using namespace cv;
 using namespace std;
 
-
+/*
 int mainS(int argc, char *argv[])
 {
 		//Variablen für Test erzeugen
@@ -103,7 +103,8 @@ int mainS(int argc, char *argv[])
 		imshow("image", imageOut);
 		waitKey(0);			
 		/*
-		*/
+		
 
 }
 
+*/

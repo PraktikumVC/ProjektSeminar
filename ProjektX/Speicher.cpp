@@ -76,7 +76,25 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 	else std::cout << "Unable to open file";
 	system("pause");
 
-	return lines;
+	//return lines;
+}
+bool Speicher::WriteText(std::vector<std::string> lines,std::string file)
+{
+	std::string buf = "TEXT\\";
+	LPSTR curDirectory = const_cast<char *> (buf.c_str());
+	//als Arbeitsumgebung setzen
+	SetFolder(buf);	
+	std::string line;
+	std::string buff = "0.sift";
+	std::ofstream myfile(file+".txt");
+	for (int i = 0; i < lines.size(); ++i) {
+
+		//std::cout << lines.at(i) << std::endl;
+		myfile << lines.at(i) << std::endl;
+	}
+	myfile.close();
+	std::cout << "file " +file+" saved and closed" << std::endl;
+	return true;
 }
 
 

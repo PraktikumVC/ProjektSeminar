@@ -93,7 +93,7 @@
 
 #include "Speicher.h"
 
-int mainY(int argc, char **argv) {	
+int main(int argc, char **argv) {	
 
 
   //Beschreibung für die Variablen: S.o.
@@ -118,24 +118,33 @@ int mainY(int argc, char **argv) {
   std::string statusvarname="";
   uint ntree=DEFAULT_NUM_TREE;
   bool replace=true;
-  bool verbose= false;
-  bool write= false;
+  bool verbose= true;
+  bool write= true;
   TreeType treetype=TREE_CLASSIFICATION;
   uint seed=0;
   Speicher Speicher;
-  Speicher.verzeichnis = "C:\\Training\\";
+  Speicher.verzeichnis = "C:\\VC\\Training\\";
   Speicher.SetFolder("object0005.view01\\MSER\\0");
-  Speicher.ReadText("C:\\Training\\object0005.view01\\MSER\\0","0.sift");
-  cv::Mat image =cv::imread("0.jpg",0);  
-  std::vector<std::string> datfile;
-  std::string spacer= "";
+  //Speicher.ReadText("C:\\Training\\object0005.view01\\MSER\\0","0.sift");
+  
+  cv::Mat image1 =cv::imread("0.jpg",0);  
+  cv::Mat image2 = cv::imread("1.jpg", 0);
+  std::vector<std::string> datfile(3,"");
+  std::string spacer = ";";
+  std::cout <<"cols: "+std::to_string(image1.cols)+", rows: "+std::to_string(image1.rows)<< std::endl;
   int c; int r;
-  for (c=0,r=0; c < image.cols,r<image.rows; ++c,++r)
-	  datfile.at(0)= datfile.at(0)+spacer+std::to_string(image.at<double>(c, r));
-  cv::namedWindow("image");
-  cv::imshow("image", image);
-  cv::waitKey(0);
-  /*
+  for (c = 0; c < image1.cols*image1.rows; ++c)
+	  datfile.at(0) = datfile.at(0) + spacer + "Grauwert"+std::to_string(c);
+
+  for (c = 0, r = 0; c < image1.cols, r<image1.rows; ++c, ++r)
+	  datfile.at(1) = datfile.at(1) + spacer + std::to_string(image1.at<double>(c, r));
+
+  for (c = 0, r = 0; c < image2.cols, r<image2.rows; ++c, ++r)
+	  datfile.at(2) = datfile.at(2) + spacer + std::to_string(image2.at<double>(c, r));
+  Speicher.WriteText(datfile, "ausgabeBat");  
+  system("pause");
+
+ /* 
   Forest* forest = 0;
   try {
 
@@ -195,6 +204,7 @@ int mainY(int argc, char **argv) {
     delete forest;
     return -1;
   }
+
+  return 0
   */
-  return 0;
 }
