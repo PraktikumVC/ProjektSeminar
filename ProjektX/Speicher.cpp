@@ -76,7 +76,7 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 	else std::cout << "Unable to open file";
 	system("pause");
 
-	//return lines;
+	return lines;
 }
 bool Speicher::WriteText(std::vector<std::string> lines,std::string file)
 {
@@ -90,7 +90,7 @@ bool Speicher::WriteText(std::vector<std::string> lines,std::string file)
 	for (int i = 0; i < lines.size(); ++i) {
 
 		//std::cout << lines.at(i) << std::endl;
-		myfile << lines.at(i) << std::endl;
+		myfile << lines.at(i) <<"\n"<< std::endl;
 	}
 	myfile.close();
 	std::cout << "file " +file+" saved and closed" << std::endl;

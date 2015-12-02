@@ -123,8 +123,8 @@ int main(int argc, char **argv) {
   TreeType treetype=TREE_CLASSIFICATION;
   uint seed=0;
   Speicher Speicher;
-  Speicher.verzeichnis = "C:\\VC\\Training\\";
-  Speicher.SetFolder("object0005.view01\\MSER\\0");
+  Speicher.verzeichnis = "C:\\";
+  Speicher.SetFolder("VCtrainingsdaten\\ZuBuD\\object0001.view03\\Hessian-Affine\\0");
   //Speicher.ReadText("C:\\Training\\object0005.view01\\MSER\\0","0.sift");
   
   cv::Mat image1 =cv::imread("0.jpg",0);  
@@ -135,12 +135,13 @@ int main(int argc, char **argv) {
   int c; int r;
   for (c = 0; c < image1.cols*image1.rows; ++c)
 	  datfile.at(0) = datfile.at(0) + spacer + "Grauwert"+std::to_string(c);
-
+  datfile.at(0) = datfile.at(0) + spacer+ "Fits";
   for (c = 0, r = 0; c < image1.cols, r<image1.rows; ++c, ++r)
-	  datfile.at(1) = datfile.at(1) + spacer + std::to_string(image1.at<double>(c, r));
+	  datfile.at(1) = datfile.at(1) + spacer + std::to_string(image1.at<unsigned char>(c, r));
 
   for (c = 0, r = 0; c < image2.cols, r<image2.rows; ++c, ++r)
-	  datfile.at(2) = datfile.at(2) + spacer + std::to_string(image2.at<double>(c, r));
+	  datfile.at(1) = datfile.at(1) + spacer + std::to_string(image2.at<unsigned char>(c, r));
+  datfile.at(1) = datfile.at(1) + spacer + "1";
   Speicher.WriteText(datfile, "ausgabeBat");  
   system("pause");
 
