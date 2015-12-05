@@ -99,40 +99,34 @@ int main(int argc, char **argv) {
   //Beschreibung für die Variablen: S.o.
   // All command line arguments as member: Capital letters
   std::vector<std::string> alwayssplitvars;
-  std::string depvarname="";
+  std::string depvarname=""; std::string predict = "";  std::string splitweights = ""; std::string ordner = "";
   MemoryMode memmode=MEM_DOUBLE;
-  bool savemem=false;
-  std::string predict="";
-  std::string splitweights="";
-  uint nthreads=DEFAULT_NUM_THREADS;
-  std::string ordner = "";
+  bool savemem=false;  
+  uint nthreads=DEFAULT_NUM_THREADS;  
   // All command line arguments as member: Small letters
   std::vector<std::string> catvars;
-  std::string file="";
+  std::string file=""; std::string outprefix="ranger_out"; std::string statusvarname = "";
   ImportanceMode impmeasure=DEFAULT_IMPORTANCE_MODE;
-  uint targetpartitionsize=0;
-  uint mtry=0;
-  std::string outprefix="ranger_out";
-  bool probability=false;
-  SplitRule splitrule=DEFAULT_SPLITRULE;
-  std::string statusvarname="";
-  uint ntree=DEFAULT_NUM_TREE;
-  bool replace=true;
-  bool verbose= true;
-  bool write= true;
+  uint targetpartitionsize=0; uint mtry=0;  uint ntree=DEFAULT_NUM_TREE; uint seed=0;
+  SplitRule splitrule=DEFAULT_SPLITRULE;  
+  bool probability=false; bool replace=true;  bool verbose= true;  bool write= true;
   TreeType treetype=TREE_CLASSIFICATION;
-  uint seed=0;
+ 
   Speicher Speicher;
+  std::vector<std::string> datfile(3, "");
+  std::string spacer = ";";
+  std::string filename = "ausgabe.bat";
+  std::string path = "";
+  int c; int r;
+
   Speicher.verzeichnis = "C:\\";
   Speicher.SetFolder("VCtrainingsdaten\\ZuBuD\\object0001.view03\\Hessian-Affine\\0");
-  //Speicher.ReadText("C:\\Training\\object0005.view01\\MSER\\0","0.sift");
-  
-  cv::Mat image1 =cv::imread("0.jpg",0);  
-  cv::Mat image2 = cv::imread("1.jpg", 0);
-  std::vector<std::string> datfile(3,"");
-  std::string spacer = ";";
-  std::cout <<"cols: "+std::to_string(image1.cols)+", rows: "+std::to_string(image1.rows)<< std::endl;
-  int c; int r;
+    
+  //Arbeit über Pixel
+  /**
+  //cv::Mat image1 =cv::imread("0.jpg",0);  
+  //cv::Mat image2 = cv::imread("1.jpg", 0);
+ 
   for (c = 0; c < image1.cols*image1.rows; ++c)
 	  datfile.at(0) = datfile.at(0) + spacer + "Grauwert"+std::to_string(c);
   datfile.at(0) = datfile.at(0) + spacer+ "Fits";
@@ -141,8 +135,19 @@ int main(int argc, char **argv) {
 
   for (c = 0, r = 0; c < image2.cols, r<image2.rows; ++c, ++r)
 	  datfile.at(1) = datfile.at(1) + spacer + std::to_string(image2.at<unsigned char>(c, r));
+	  /**/
+  //Arbeit über SIFT-Deskriptor
+  std::vector<std::string>lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", "0.sift");
+  datfile.at(0)="SIFT"+std::to_string(0);
+  for (c = 1; c < 128; ++c)
+	  datfile.at(0) = datfile.at(0) + spacer + "SIFT" + std::to_string(c);
+  datfile.at(1) = lines.at(0);
+  /**/
   datfile.at(1) = datfile.at(1) + spacer + "1";
-  Speicher.WriteText(datfile, "ausgabeBat");  
+  Speicher.WriteText(datfile, filename);
+  Speicher.SetFolder("");
+  std::string zwischenspeicher= Speicher.FindFile(filename, "VC\\Training\\TEXT", 5);
+  std::cout<<"pwesadf: |"+zwischenspeicher+"|ime"<<std::endl;
   system("pause");
 
  /* 

@@ -14,6 +14,8 @@
 #include <Shlwapi.h>
 #include <fstream>
 #include <vector>
+#include <stdlib.h>
+
 
 
 Speicher::Speicher()
@@ -70,17 +72,19 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 		while (getline(myfile, line))
 		{
 			lines.push_back(line);
+			std::cout << line << std::endl;
 		}
 		myfile.close();
 	}
 	else std::cout << "Unable to open file";
-	system("pause");
+	//system("pause");
 
 	return lines;
 }
+
 bool Speicher::WriteText(std::vector<std::string> lines,std::string file)
 {
-	std::string buf = "TEXT\\";
+	std::string buf = "VC\\Training\\TEXT\\";
 	LPSTR curDirectory = const_cast<char *> (buf.c_str());
 	//als Arbeitsumgebung setzen
 	SetFolder(buf);	
@@ -97,4 +101,27 @@ bool Speicher::WriteText(std::vector<std::string> lines,std::string file)
 	return true;
 }
 
+std::string Speicher::FindFile(std::string file, std::string path, int random)
+{
+		HANDLE fHandle;
+		WIN32_FIND_DATA wfd;
+		LPSTR curDirectory = const_cast<char *> (path.c_str());
+		int i = 0;
+		std::vector < std::string >  Dateien(20, "");
+		std::cout << "0" << std::endl;
+		fHandle = FindFirstFile(curDirectory, &wfd);
+		std::cout << "1" << std::endl;
+
+		do
+		{
+			Dateien.at(i) = wfd.cFileName[i];
+			i++;
+			std::cout << "2" << std::endl;
+		} while (FindNextFile(fHandle, &wfd));
+		std::cout << "3" << std::endl;
+		FindClose(fHandle);
+		std::cout << "4" << std::endl;
+
+		return Dateien.at(random%Dateien.size()); //random%Dateien.size()
+}
 
