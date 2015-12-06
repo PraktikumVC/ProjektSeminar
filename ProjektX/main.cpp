@@ -92,6 +92,7 @@
 #include "ForestProbability.h"
 
 #include "Speicher.h"
+#include "Mathe.h"
 
 int main(int argc, char **argv) {	
 
@@ -112,7 +113,7 @@ int main(int argc, char **argv) {
   bool probability=false; bool replace=true;  bool verbose= true;  bool write= true;
   TreeType treetype=TREE_CLASSIFICATION;
  
-  Speicher Speicher;
+  Speicher Speicher; Mathe Mathe;
   std::vector<std::string> datfile(3, "");
   std::string spacer = ";";
   std::string filename = "ausgabe.bat";
@@ -146,8 +147,21 @@ int main(int argc, char **argv) {
   datfile.at(1) = datfile.at(1) + spacer + "1";
   Speicher.WriteText(datfile, filename);
   Speicher.SetFolder("");
-  std::string zwischenspeicher= Speicher.FindFile(filename, "VC\\Training\\TEXT", 5);
-  std::cout<<"pwesadf: |"+zwischenspeicher+"|ime"<<std::endl;
+  std::string zwischenspeicher= Speicher.FindFile(filename, "VC\\Training\\TEXT\\*", Mathe.Random(5, true));
+  /*zwischenspeicher.append(Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 1));
+  zwischenspeicher.append (Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 2));
+  zwischenspeicher.append (Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 3));
+  zwischenspeicher.append ( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 4));
+  zwischenspeicher.append( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 5));
+  zwischenspeicher.append( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 6));
+  zwischenspeicher.append( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 7));
+  zwischenspeicher.append ( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 8));
+  zwischenspeicher.append( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 9));
+  zwischenspeicher.append( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 10));*/
+  std::cout<<"pwesadf: |"<<zwischenspeicher<<std::endl;
+  datfile.at(0) = zwischenspeicher;
+  Speicher.WriteText(datfile, "blbl");
+
   system("pause");
 
  /* 

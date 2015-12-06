@@ -4,6 +4,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <math.h>
 #include <iostream>
+#include <time.h>
 
 
 
@@ -33,4 +34,19 @@ std::string Mathe::WinkelZuString(double winkel, double winkel2,double winkel3)
 {
 	int x = winkel - 90; int y = winkel2 - 90; int z = winkel3 - 90;
 	return "kartesisch "+std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z);
+}
+int Mathe::Random(int zahl, bool echt)
+{
+	if (echt)
+	{
+		srand(time(0));
+		return rand() % zahl;
+	}
+	else
+	{
+		srand(1);
+		return rand() % zahl;
+	}
+
+
 }

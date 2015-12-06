@@ -11,5 +11,6 @@ public:
 	double Mathe::WinkelZuGrad(double wert);
 	std::string Mathe::WinkelZuString(double winkel, double winkel2);
 	std::string Mathe::WinkelZuString(double winkel, double winkel2,double winkel3);
+	int Random(int zahl, bool echt);
 };
 
