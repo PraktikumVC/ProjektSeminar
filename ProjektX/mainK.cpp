@@ -94,7 +94,7 @@
 #include "Speicher.h"
 #include "Mathe.h"
 
-int main(int argc, char **argv) {	
+int main2(int argc, char **argv) {	
 
 
   //Beschreibung für die Variablen: S.o.
@@ -114,9 +114,9 @@ int main(int argc, char **argv) {
   TreeType treetype=TREE_CLASSIFICATION;
  
   Speicher Speicher; Mathe Mathe;
-  std::vector<std::string> datfile(3, "");
-  std::string spacer = ";";
-  std::string filename = "ausgabe.bat";
+  std::vector<std::string> datfile;
+  std::string spacer = " ";
+  std::string filename = "data.dat";
   std::string path = "";
   int c; int r;
 
@@ -138,29 +138,27 @@ int main(int argc, char **argv) {
 	  datfile.at(1) = datfile.at(1) + spacer + std::to_string(image2.at<unsigned char>(c, r));
 	  /**/
   //Arbeit über SIFT-Deskriptor
-  std::vector<std::string>lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", "0.sift");
-  datfile.at(0)="SIFT"+std::to_string(0);
-  for (c = 1; c < 128; ++c)
+  std::vector<std::string>lines;
+  std::string zwischenspeicher;
+  datfile.push_back("0"); //Eintrag ?
+  for (c = 0; c < 256; ++c)
 	  datfile.at(0) = datfile.at(0) + spacer + "SIFT" + std::to_string(c);
-  datfile.at(1) = lines.at(0);
-  /**/
-  datfile.at(1) = datfile.at(1) + spacer + "1";
+  datfile.at(0) = datfile.at(0) + spacer + "polaritaet";
+  c = 0;
+  for (r = 1; r < 5;++r){
+	zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
+	lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
+	datfile.push_back(std::to_string(r)+spacer+lines.at(0));	
+	std::cout << "ZwSp:|"<<zwischenspeicher <<"|" <<std::endl;
+	lines.clear();
+	//_________________________________________________________________________________________________________________________________
+	zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
+	lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
+	std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
+	datfile.at(r) = datfile.at(r)+" "+lines.at(0);
+	datfile.at(r) = datfile.at(r) + " " + "1";	
+  }
   Speicher.WriteText(datfile, filename);
-  Speicher.SetFolder("");
-  std::string zwischenspeicher= Speicher.FindFile(filename, "VC\\Training\\TEXT\\*", Mathe.Random(5, true));
-  /*zwischenspeicher.append(Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 1));
-  zwischenspeicher.append (Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 2));
-  zwischenspeicher.append (Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 3));
-  zwischenspeicher.append ( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 4));
-  zwischenspeicher.append( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 5));
-  zwischenspeicher.append( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 6));
-  zwischenspeicher.append( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 7));
-  zwischenspeicher.append ( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 8));
-  zwischenspeicher.append( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 9));
-  zwischenspeicher.append( Speicher.FindFile(filename, "VC\\Training\\TEXT\\", 10));*/
-  std::cout<<"pwesadf: |"<<zwischenspeicher<<std::endl;
-  datfile.at(0) = zwischenspeicher;
-  Speicher.WriteText(datfile, "blbl");
 
   system("pause");
 

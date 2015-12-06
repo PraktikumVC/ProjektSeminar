@@ -12,5 +12,7 @@ public:
 	std::string Mathe::WinkelZuString(double winkel, double winkel2);
 	std::string Mathe::WinkelZuString(double winkel, double winkel2,double winkel3);
 	int Random(int zahl, bool echt);
+	int lastRandom;
+	int counterRandom;
 };
 

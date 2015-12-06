@@ -39,13 +39,14 @@ int Mathe::Random(int zahl, bool echt)
 {
 	if (echt)
 	{
-		srand(time(0));
-		return rand() % zahl;
+		while(lastRandom== rand() % (zahl + 100)) srand(time(0));
+		return rand() % (zahl+100);
 	}
 	else
 	{
-		srand(1);
-		return rand() % zahl;
+		counterRandom = counterRandom + 1;
+		srand(counterRandom);
+		return rand() % (zahl+100);
 	}
 
 

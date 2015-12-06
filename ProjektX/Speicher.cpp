@@ -72,7 +72,7 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 		while (getline(myfile, line))
 		{
 			lines.push_back(line);
-			std::cout << line << std::endl;
+			//std::cout << line << std::endl;
 		}
 		myfile.close();
 	}
@@ -90,7 +90,7 @@ bool Speicher::WriteText(std::vector<std::string> lines,std::string file)
 	SetFolder(buf);	
 	std::string line;
 	std::string buff = "0.sift";
-	std::ofstream myfile(file+".txt");
+	std::ofstream myfile(file);
 	for (int i = 0; i < lines.size(); ++i) {
 
 		//std::cout << lines.at(i) << std::endl;
@@ -117,7 +117,6 @@ std::string Speicher::FindFile(std::string file, std::string path, int random)
 			i++;
 		} while (FindNextFile(fHandle, &wfd));
 		FindClose(fHandle);
-		std::cout << Dateien.size() << std::endl;
 		return Dateien.at(random%Dateien.size());
 }
 
