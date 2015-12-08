@@ -94,7 +94,7 @@
 #include "Speicher.h"
 #include "Mathe.h"
 
-int main2(int argc, char **argv) {	
+int main(int argc, char **argv) {	
 
 
   //Beschreibung für die Variablen: S.o.
@@ -115,8 +115,8 @@ int main2(int argc, char **argv) {
  
   Speicher Speicher; Mathe Mathe;
   std::vector<std::string> datfile;
-  std::string spacer = " ";
-  std::string filename = "data.dat";
+  std::string spacer = "  ";
+  std::string filename = "data";
   std::string path = "";
   int c; int r;
 
@@ -140,24 +140,48 @@ int main2(int argc, char **argv) {
   //Arbeit über SIFT-Deskriptor
   std::vector<std::string>lines;
   std::string zwischenspeicher;
-  datfile.push_back("0"); //Eintrag ?
-  for (c = 0; c < 256; ++c)
-	  datfile.at(0) = datfile.at(0) + spacer + "SIFT" + std::to_string(c);
+  std::string zwischenspeicher2;
+  int random1;
+  int random2;
+  datfile.push_back("SIFT0");
+  for (c = 1; c < 256; ++c)
+	  datfile.at(0) = datfile.at(0) +spacer + "SIFT" + std::to_string(c);
   datfile.at(0) = datfile.at(0) + spacer + "polaritaet";
   c = 0;
-  for (r = 1; r < 5;++r){
-	zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
-	lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
-	datfile.push_back(std::to_string(r)+spacer+lines.at(0));	
-	std::cout << "ZwSp:|"<<zwischenspeicher <<"|" <<std::endl;
-	lines.clear();
-	//_________________________________________________________________________________________________________________________________
-	zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
-	lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
-	std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
-	datfile.at(r) = datfile.at(r)+" "+lines.at(0);
-	datfile.at(r) = datfile.at(r) + " " + "1";	
+  
+  for (r = 1; r < 5; ++r) {
+	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
+	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
+	  datfile.push_back(lines.at(0));
+	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
+	  lines.clear();
+	  //_________________________________________________________________________________________________________________________________
+	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
+	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
+	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
+	  datfile.at(r) = datfile.at(r) + " " + lines.at(0);
+	  datfile.at(r) = datfile.at(r) + " " + "1";
   }
+  for (r = 1; r < 5; ++r) {
+	  random1 = Mathe.Random(5, true);
+	  random2 = Mathe.Random(5, true);
+	  while (random1 == random2)
+		  random2 = Mathe.Random(5, true);
+	  zwischenspeicher2 = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\*", random1);
+	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\"+zwischenspeicher2+"\\*.sift", Mathe.Random(5, true));
+	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
+	  datfile.push_back(lines.at(0));
+	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
+	  lines.clear();
+	  //_________________________________________________________________________________________________________________________________
+	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
+	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
+	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
+	  datfile.at(r) = datfile.at(r) + " " + lines.at(0);
+	  datfile.at(r) = datfile.at(r) + " " + "0";
+  }
+
+  std::random_shuffle(datfile.begin(), datfile.end());
   Speicher.WriteText(datfile, filename);
 
   system("pause");

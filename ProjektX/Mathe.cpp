@@ -39,8 +39,10 @@ int Mathe::Random(int zahl, bool echt)
 {
 	if (echt)
 	{
-		while(lastRandom== rand() % (zahl + 100)) srand(time(0));
-		return rand() % (zahl+100);
+		while(lastRandom== rand() % (zahl + 100)) 
+			srand(time(0));
+		lastRandom = rand() % (zahl + 100);
+		return lastRandom;
 	}
 	else
 	{

@@ -94,7 +94,7 @@ std::cout << "    " << "--savemem                     Use memory saving (but slo
 #include "Speicher.h"
 #include "Mathe.h"
 
-int main(int argc, char **argv) {
+int main2(int argc, char **argv) {
 
 
 	//Beschreibung für die Variablen: S.o.
