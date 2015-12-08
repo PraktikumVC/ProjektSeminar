@@ -94,7 +94,7 @@ std::cout << "    " << "--savemem                     Use memory saving (but slo
 #include "Speicher.h"
 #include "Mathe.h"
 
-int main2(int argc, char **argv) {
+int main(int argc, char **argv) {
 
 
 	//Beschreibung für die Variablen: S.o.
@@ -118,7 +118,7 @@ int main2(int argc, char **argv) {
 	std::string spacer = " ";
 	std::string filename = "data.dat";
 	std::string path = "C:\\VC\\TrainingPM\\";
-	int c; int r;
+	int c; int r; int i;
 
 	Speicher.verzeichnis = "C:\\";
 	
@@ -138,46 +138,65 @@ int main2(int argc, char **argv) {
 	datfile.at(1) = datfile.at(1) + spacer + std::to_string(image2.at<unsigned char>(c, r));
 	/**/
 	//Arbeit über SIFT-Deskriptor
-	std::vector<std::string>linesHessNeg = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*Affine_negative", 0));
-	std::vector<std::string>linesHessPos = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*Affine_positive", 0));
-	std::vector<std::string>linesMSERNeg = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*MSER_negative", 0));
-	std::vector<std::string>linesMSERPos = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*MSER_positive", 0));
-	std::string zwischenspeicher;
-	datfile.push_back("0"); //Eintrag ?
-	for (c = 0; c < 128; ++c)
+	for (i = 0; i < 2; ++i) {
+		std::vector<std::string>linesHessNeg = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*Affine_negative", 0));
+		std::vector<std::string>linesHessPos = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*Affine_positive", 0));
+		std::vector<std::string>linesMSERNeg = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*MSER_negative", 0));
+		std::vector<std::string>linesMSERPos = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*MSER_positive", 0));
+		std::string zwischenspeicher;
+		datfile.push_back("SIFT0");
+		//MSER
+		for (r = 0; r < linesMSERNeg.size(); ++r)
+		{
+			datfile.push_back(linesMSERNeg.at(r) + spacer + "0");
+		}
+		for (r = 0; r < linesMSERPos.size(); ++r)
+		{
+			datfile.push_back(linesMSERPos.at(r) + spacer + "1");
+		}
+	}
+	std::random_shuffle(datfile.begin(), datfile.end());
+
+	std::vector<std::string>::iterator it1;
+	it1 = datfile.begin();
+	it1 = datfile.insert(it1, "SIFT0");
+
+	for (c = 1; c < 128; ++c)
 		datfile.at(0) = datfile.at(0) + spacer + "SIFT" + std::to_string(c);
 	datfile.at(0) = datfile.at(0) + spacer + "polaritaet";
-	//MSER
-	for (r = 0; r < linesMSERNeg.size(); ++r)
-	{
-		datfile.push_back(std::to_string(r) + spacer + linesMSERNeg.at(r) + spacer + "0");
-	}
-	for (r = 0; r < linesMSERPos.size(); ++r)
-	{
-		datfile.push_back(std::to_string(r) + spacer + linesMSERPos.at(r) + spacer + "1");
-	}
-
-	std::random_shuffle(datfile.begin(), datfile.end());
 	Speicher.WriteText(datfile, "MSER"+filename);
 	
 	datfile.clear();
 	/*-----------------------------------------------------------------------------------------------------------------------*/
-	datfile.push_back("0"); //Eintrag ?
-	for (c = 0; c < 128; ++c)
-		datfile.at(0) = datfile.at(0) + spacer + "SIFT" + std::to_string(c);
-	datfile.at(0) = datfile.at(0) + spacer + "polaritaet";
-	//Hessian
-	for (r = 0; r < linesHessNeg.size(); ++r)
-	{
-		datfile.push_back(std::to_string(r) + spacer + linesHessNeg.at(r) + spacer + "0");
-	}
-	std::cout << "neg: r: " << r << std::endl;
-	for (r = 0; r < linesHessPos.size(); ++r)
-	{
-		datfile.push_back(std::to_string(r) + spacer + linesHessPos.at(r) + spacer + "1");
+	for (i = 0; i < 2; ++i) {
+		std::vector<std::string>linesHessNeg = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*Affine_negative", 0));
+		std::vector<std::string>linesHessPos = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*Affine_positive", 0));
+		std::vector<std::string>linesMSERNeg = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*MSER_negative", 0));
+		std::vector<std::string>linesMSERPos = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*MSER_positive", 0));
+		std::string zwischenspeicher;
+
+
+		//Hessian
+		for (r = 0; r < linesHessNeg.size(); ++r)
+		{
+			datfile.push_back(linesHessNeg.at(r) + spacer + "0");
+		}
+		std::cout << "neg: r: " << r << std::endl;
+		for (r = 0; r < linesHessPos.size(); ++r)
+		{
+			datfile.push_back(linesHessPos.at(r) + spacer + "1");
+		}
 	}
 	std::cout << "pos: r: " << r << std::endl;
 	std::random_shuffle(datfile.begin(), datfile.end());
+
+	std::vector<std::string>::iterator it2;
+	it2 = datfile.begin();
+	it2 = datfile.insert(it2, "SIFT0");
+
+	for (c = 1; c < 128; ++c)
+		datfile.at(0) = datfile.at(0) + spacer + "SIFT" + std::to_string(c);
+	datfile.at(0) = datfile.at(0) + spacer + "polaritaet";
 	Speicher.WriteText(datfile, "Hessian"+filename);
 
 	system("pause");
