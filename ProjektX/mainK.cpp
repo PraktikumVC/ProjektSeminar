@@ -94,7 +94,7 @@
 #include "Speicher.h"
 #include "Mathe.h"
 
-int main2(int argc, char **argv) {	
+int mainK(int argc, char **argv) {	
 
 
   //Beschreibung für die Variablen: S.o.
@@ -115,13 +115,14 @@ int main2(int argc, char **argv) {
  
   Speicher Speicher; Mathe Mathe;
   std::vector<std::string> datfile;
+  std::vector<std::string> polaritaet;
   std::string spacer = "  ";
   std::string filename = "data";
   std::string path = "";
-  int c; int r;
+  int c; int r; int datfilesize;
 
   Speicher.verzeichnis = "C:\\";
-  Speicher.SetFolder("VCtrainingsdaten\\ZuBuD\\object0001.view03\\Hessian-Affine\\0");
+ // Speicher.SetFolder("VCtrainingsdaten\\ZuBuD\\object0001.view03\\Hessian-Affine\\0");
     
   //Arbeit über Pixel
   /**
@@ -141,15 +142,11 @@ int main2(int argc, char **argv) {
   std::vector<std::string>lines;
   std::string zwischenspeicher;
   std::string zwischenspeicher2;
+  std::string wasd;
   int random1;
   int random2;
-  datfile.push_back("SIFT0");
-  for (c = 1; c < 256; ++c)
-	  datfile.at(0) = datfile.at(0) +spacer + "SIFT" + std::to_string(c);
-  datfile.at(0) = datfile.at(0) + spacer + "polaritaet";
-  c = 0;
   
-  for (r = 1; r < 5; ++r) {
+  for (r = 0; r < 4; ++r) {
 	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
 	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
 	  datfile.push_back(lines.at(0));
@@ -162,16 +159,17 @@ int main2(int argc, char **argv) {
 	  datfile.at(r) = datfile.at(r) + " " + lines.at(0);
 	  datfile.at(r) = datfile.at(r) + " " + "1";
   }
-  for (r = 1; r < 5; ++r) {
+  datfilesize = datfile.size();
+  for (r = datfilesize; r < datfilesize+5; ++r) {
 	  random1 = Mathe.Random(5, true);
 	  random2 = Mathe.Random(5, true);
 	  while (random1 == random2)
 		  random2 = Mathe.Random(5, true);
 	  zwischenspeicher2 = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\*", random1);
 	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\"+zwischenspeicher2+"\\*.sift", Mathe.Random(5, true));
-	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
+	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\" + zwischenspeicher2 , zwischenspeicher);
+	  std::cout << "ZwSp:|" << zwischenspeicher2 << "\\" << zwischenspeicher << "|" << std::endl;
 	  datfile.push_back(lines.at(0));
-	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
 	  lines.clear();
 	  //_________________________________________________________________________________________________________________________________
 	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
@@ -182,7 +180,22 @@ int main2(int argc, char **argv) {
   }
 
   std::random_shuffle(datfile.begin(), datfile.end());
+
+  std::vector<std::string>::iterator it2;
+  it2 = datfile.begin();
+  it2 = datfile.insert(it2, "SIFT0");
+
+  for (c = 1; c < 256; ++c)
+	  datfile.at(0) = datfile.at(0) + spacer + "SIFT" + std::to_string(c);
+  datfile.at(0) = datfile.at(0) + spacer + "polaritaet";
+
+  for (r = 0; r < datfile.size();++r) {
+	  wasd = datfile.at(r).back();
+	  polaritaet.push_back(wasd );
+  }
+
   Speicher.WriteText(datfile, filename);
+  Speicher.WriteText(polaritaet, filename+"_pol.txt");
 
   system("pause");
 

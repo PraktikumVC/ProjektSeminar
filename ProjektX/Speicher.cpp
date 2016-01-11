@@ -71,6 +71,10 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 	{
 		while (getline(myfile, line))
 		{
+			while (line.find(" 0 ")!=line.npos) {
+				std::cout << line.find(" 0 ") << std::endl;
+				line.replace(line.find(" 0 "), 3, " 0.0 ");
+			};
 			lines.push_back(line);
 			//std::cout << line << std::endl;
 		}
@@ -88,8 +92,6 @@ bool Speicher::WriteText(std::vector<std::string> lines,std::string file)
 	LPSTR curDirectory = const_cast<char *> (buf.c_str());
 	//als Arbeitsumgebung setzen
 	SetFolder(buf);	
-	std::string line;
-	std::string buff = "0.sift";
 	std::ofstream myfile(file);
 	for (int i = 0; i < lines.size(); ++i) {
 		myfile << lines.at(i) << std::endl;
@@ -104,7 +106,6 @@ std::string Speicher::FindFile(std::string file, std::string path, int random)
 		HANDLE fHandle;
 		WIN32_FIND_DATA wfd;
 		LPSTR curDirectory = const_cast<char *> (path.c_str());
-		int i = 0;
 		std::vector < std::string >  Dateien;
 		fHandle = FindFirstFile(curDirectory, &wfd);
 		FindNextFile(fHandle, &wfd);
@@ -112,7 +113,7 @@ std::string Speicher::FindFile(std::string file, std::string path, int random)
 		do
 		{
 			Dateien.push_back( wfd.cFileName/*[i]*/);
-			i++;
+//			i++;
 		} while (FindNextFile(fHandle, &wfd));
 		FindClose(fHandle);
 		return Dateien.at(random%Dateien.size());

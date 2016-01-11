@@ -115,10 +115,12 @@ int main(int argc, char **argv) {
 
 	Speicher Speicher; Mathe Mathe;
 	std::vector<std::string> datfile;
+	std::vector<std::string> polaritaet;
 	std::string spacer = " ";
 	std::string filename = "data.dat";
 	std::string path = "C:\\VC\\TrainingPM\\";
 	int c; int r; int i;
+	std::string wasd;
 
 	Speicher.verzeichnis = "C:\\";
 	
@@ -198,6 +200,13 @@ int main(int argc, char **argv) {
 		datfile.at(0) = datfile.at(0) + spacer + "SIFT" + std::to_string(c);
 	datfile.at(0) = datfile.at(0) + spacer + "polaritaet";
 	Speicher.WriteText(datfile, "Hessian"+filename);
+
+	for (r = 0; r < datfile.size(); ++r) {
+		wasd = datfile.at(r).back();
+		polaritaet.push_back(wasd);
+	}
+
+	Speicher.WriteText(polaritaet, filename + "_pol.txt");
 
 	system("pause");
 
