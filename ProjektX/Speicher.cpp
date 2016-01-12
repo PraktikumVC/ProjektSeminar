@@ -67,6 +67,7 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 	std::string line;
 	std::string buff = "0.sift";
 	std::ifstream myfile(file);
+	size_t n;
 	if (myfile.is_open())
 	{
 		while (getline(myfile, line))
@@ -75,6 +76,8 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 				std::cout << line.find(" 0 ") << std::endl;
 				line.replace(line.find(" 0 "), 3, " 0.0 ");
 			};
+			n = std::count(line.begin(), line.end(), ' ');
+			if(n!=127)std::cout << "Number of Spaces:| " << n << " |---------------------------------------------------" << std::endl;
 			lines.push_back(line);
 			//std::cout << line << std::endl;
 		}

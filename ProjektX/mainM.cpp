@@ -94,7 +94,7 @@ std::cout << "    " << "--savemem                     Use memory saving (but slo
 #include "Speicher.h"
 #include "Mathe.h"
 
-int main(int argc, char **argv) {
+int mainM(int argc, char **argv) {
 
 
 	//Beschreibung für die Variablen: S.o.
@@ -146,7 +146,6 @@ int main(int argc, char **argv) {
 		std::vector<std::string>linesMSERNeg = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*MSER_negative", 0));
 		std::vector<std::string>linesMSERPos = Speicher.ReadText(path, Speicher.FindFile(filename, path + "*MSER_positive", 0));
 		std::string zwischenspeicher;
-		datfile.push_back("SIFT0");
 		//MSER
 		for (r = 0; r < linesMSERNeg.size(); ++r)
 		{

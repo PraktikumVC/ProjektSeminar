@@ -94,7 +94,7 @@
 #include "Speicher.h"
 #include "Mathe.h"
 
-int mainK(int argc, char **argv) {	
+int main(int argc, char **argv) {	
 
 
   //Beschreibung für die Variablen: S.o.
@@ -160,7 +160,22 @@ int mainK(int argc, char **argv) {
 	  datfile.at(r) = datfile.at(r) + " " + "1";
   }
   datfilesize = datfile.size();
-  for (r = datfilesize; r < datfilesize+5; ++r) {
+  for (r = datfilesize; r < datfilesize+4; ++r) {
+	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\15\\*.sift", Mathe.Random(5, true));
+	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\15", zwischenspeicher);
+	  datfile.push_back(lines.at(0));
+	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
+	  lines.clear();
+	  //_________________________________________________________________________________________________________________________________
+	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\15\\*.sift", Mathe.Random(5, true));
+	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\15", zwischenspeicher);
+	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
+	  datfile.at(r) = datfile.at(r) + " " + lines.at(0);
+	  datfile.at(r) = datfile.at(r) + " " + "1";
+  }
+
+  datfilesize = datfile.size();
+  for (r = datfilesize; r < datfilesize+10; ++r) {
 	  random1 = Mathe.Random(5, true);
 	  random2 = Mathe.Random(5, true);
 	  while (random1 == random2)
@@ -178,8 +193,7 @@ int mainK(int argc, char **argv) {
 	  datfile.at(r) = datfile.at(r) + " " + lines.at(0);
 	  datfile.at(r) = datfile.at(r) + " " + "0";
   }
-
-  std::random_shuffle(datfile.begin(), datfile.end());
+  for (c = 0; c < Mathe.Random(5, true)+3;++c)  std::random_shuffle(datfile.begin(), datfile.end());
 
   std::vector<std::string>::iterator it2;
   it2 = datfile.begin();
