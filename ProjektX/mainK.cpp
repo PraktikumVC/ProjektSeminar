@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
   //Beschreibung für die Variablen: S.o.
   // All command line arguments as member: Capital letters
   std::vector<std::string> alwayssplitvars;
-  std::string depvarname=""; std::string predict = "";  std::string splitweights = ""; std::string ordner = "";
+  std::string depvarname=""; std::string predict = "";  std::string splitweights = ""; //std::string ordner = "";
   MemoryMode memmode=MEM_DOUBLE;
   bool savemem=false;  
   uint nthreads=DEFAULT_NUM_THREADS;  
@@ -140,42 +140,46 @@ int main(int argc, char **argv) {
 	  /**/
   //Arbeit über SIFT-Deskriptor
   std::vector<std::string>lines;
+  std::vector<std::string>ordner;
   std::string zwischenspeicher;
   std::string zwischenspeicher2;
   std::string wasd;
+  std::string verzeichnis= "C:\\VC\\Training\\object0005.view02\\MSER\\";
+  std::string rootVerzeichnis=verzeichnis;
   int random1;
-  int random2;
-  
-  for (r = 0; r < 4; ++r) {
-	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
-	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
+  int random2;  
+  Speicher.FindFile(filename, verzeichnis+"*", 0);
+  ordner = Speicher.FilesImSpeicher;
+  int ordnerSize=ordner.size();
+  std::cout << "Ordnergroesse:"<<ordnerSize << std::endl;
+  for (r = 0; r < 30; ++r) {	 
+	  random1 = Mathe.Random(ordnerSize - 101, true);
+	  random2 = Mathe.Random(ordnerSize - 101, true);
+	  std::cout << "random1 und 2:" << random1 <<" | " << random2 << " | " << Speicher.FilesImSpeicher.size() << std::endl;
+	  verzeichnis = verzeichnis + ordner.at(random1) ;
+	  while (random1%Speicher.FilesImSpeicher.size() == random2%Speicher.FilesImSpeicher.size()&& Speicher.FilesImSpeicher.size()>1)
+		  random2 = Mathe.Random(5, true);
+	  zwischenspeicher = Speicher.FindFile(filename, verzeichnis + "\\*.sift", random1);
+	  lines = Speicher.ReadText(verzeichnis, zwischenspeicher);
 	  datfile.push_back(lines.at(0));
-	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
+	  std::cout << "ZwSp:|" << zwischenspeicher << "| " << std::ends;
 	  lines.clear();
 	  //_________________________________________________________________________________________________________________________________
-	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
-	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
-	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
+	//  zwischenspeicher2 = zwischenspeicher;	  
+	 // while (zwischenspeicher==zwischenspeicher2 && Speicher.FilesImSpeicher.size()>2)
+		  zwischenspeicher = Speicher.FindFile(filename, verzeichnis + "\\*.sift", random2);
+	  lines = Speicher.ReadText(verzeichnis, zwischenspeicher);
+	  std::cout << "ZwSp:|" << zwischenspeicher << "| " << std::ends;
 	  datfile.at(r) = datfile.at(r) + " " + lines.at(0);
 	  datfile.at(r) = datfile.at(r) + " " + "1";
+	  random1 = 0; random2 = 0; lines.clear();
+	  verzeichnis = rootVerzeichnis;
+	  std::cout << std::endl;
+	 
   }
+  std::cout << "end of polaritaet =1" << std::endl;
   datfilesize = datfile.size();
-  for (r = datfilesize; r < datfilesize+4; ++r) {
-	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\15\\*.sift", Mathe.Random(5, true));
-	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\15", zwischenspeicher);
-	  datfile.push_back(lines.at(0));
-	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
-	  lines.clear();
-	  //_________________________________________________________________________________________________________________________________
-	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\15\\*.sift", Mathe.Random(5, true));
-	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\15", zwischenspeicher);
-	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
-	  datfile.at(r) = datfile.at(r) + " " + lines.at(0);
-	  datfile.at(r) = datfile.at(r) + " " + "1";
-  }
-
-  datfilesize = datfile.size();
-  for (r = datfilesize; r < datfilesize+10; ++r) {
+  for (r = datfilesize; r < datfilesize+20; ++r) {
 	  random1 = Mathe.Random(5, true);
 	  random2 = Mathe.Random(5, true);
 	  while (random1 == random2)
@@ -183,15 +187,16 @@ int main(int argc, char **argv) {
 	  zwischenspeicher2 = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\*", random1);
 	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\"+zwischenspeicher2+"\\*.sift", Mathe.Random(5, true));
 	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\" + zwischenspeicher2 , zwischenspeicher);
-	  std::cout << "ZwSp:|" << zwischenspeicher2 << "\\" << zwischenspeicher << "|" << std::endl;
+	  std::cout << "ZwSp:|" << zwischenspeicher2 << "\\" << zwischenspeicher << "| " << std::ends;
 	  datfile.push_back(lines.at(0));
 	  lines.clear();
 	  //_________________________________________________________________________________________________________________________________
 	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
 	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
-	  std::cout << "ZwSp:|" << zwischenspeicher << "|" << std::endl;
+	  std::cout << "ZwSp:|" << zwischenspeicher << "| " << std::ends;
 	  datfile.at(r) = datfile.at(r) + " " + lines.at(0);
 	  datfile.at(r) = datfile.at(r) + " " + "0";
+	  std::cout << std::endl;
   }
   for (c = 0; c < Mathe.Random(5, true)+3;++c)  std::random_shuffle(datfile.begin(), datfile.end());
 
@@ -210,7 +215,7 @@ int main(int argc, char **argv) {
 
   Speicher.WriteText(datfile, filename);
   Speicher.WriteText(polaritaet, filename+"_pol.txt");
-
+  std::cout <<"Größe von "+filename+":"<< datfile.size()<<std::endl;
   system("pause");
 
  /* 

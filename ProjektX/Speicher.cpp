@@ -59,13 +59,12 @@ Einlesen von Textdokumenten, zb SIFT
 */
 std::vector<std::string> Speicher::ReadText(std::string directory, std::string file)
 {
-	std::string buf = "C:\\VC\\Training\\MLM\\MLM\\ZuBuD\\object0001.view03\\Hessian-Affine\\0";
+	//std::string buf = "C:\\VC\\Training\\MLM\\MLM\\ZuBuD\\object0001.view03\\Hessian-Affine\\0";
 	LPSTR curDirectory = const_cast<char *> (directory.c_str());
 	//als Arbeitsumgebung setzen
 	SetCurrentDirectory(curDirectory);
 	std::vector<std::string> lines;
 	std::string line;
-	std::string buff = "0.sift";
 	std::ifstream myfile(file);
 	size_t n;
 	if (myfile.is_open())
@@ -73,7 +72,7 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 		while (getline(myfile, line))
 		{
 			while (line.find(" 0 ")!=line.npos) {
-				std::cout << line.find(" 0 ") << std::endl;
+				//std::cout << line.find(" 0 ") << std::endl;
 				line.replace(line.find(" 0 "), 3, " 0.0 ");
 			};
 			n = std::count(line.begin(), line.end(), ' ');
@@ -119,6 +118,7 @@ std::string Speicher::FindFile(std::string file, std::string path, int random)
 //			i++;
 		} while (FindNextFile(fHandle, &wfd));
 		FindClose(fHandle);
+		FilesImSpeicher = Dateien;
 		return Dateien.at(random%Dateien.size());
 }
 
