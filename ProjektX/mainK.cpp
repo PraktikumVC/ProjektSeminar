@@ -169,14 +169,14 @@ int main(int argc, char **argv) {
 	 // while (zwischenspeicher==zwischenspeicher2 && Speicher.FilesImSpeicher.size()>2)
 		  zwischenspeicher = Speicher.FindFile(filename, verzeichnis + "\\*.sift", random2);
 	  lines = Speicher.ReadText(verzeichnis, zwischenspeicher);
-	  std::cout << "ZwSp:|" << zwischenspeicher << "| " << std::ends;
+	  std::cout << "ZwSp:|" << zwischenspeicher << "|| " << std::ends;
 	  datfile.at(r) = datfile.at(r) + " " + lines.at(0);
 	  datfile.at(r) = datfile.at(r) + " " + "1";
 	  random1 = 0; random2 = 0; lines.clear();
-	  verzeichnis = rootVerzeichnis;
-	  std::cout << std::endl;
+	  verzeichnis = rootVerzeichnis;  
 	 
   }
+  std::cout << std::endl;
   std::cout << "end of polaritaet =1" << std::endl;
   datfilesize = datfile.size();
   for (r = datfilesize; r < datfilesize+20; ++r) {
