@@ -59,6 +59,7 @@ Einlesen von Textdokumenten, zb SIFT
 */
 std::vector<std::string> Speicher::ReadText(std::string directory, std::string file)
 {
+	//std::cout <<"ReadText von: " <<directory << "|" << file << std::endl;
 	//std::string buf = "C:\\VC\\Training\\MLM\\MLM\\ZuBuD\\object0001.view03\\Hessian-Affine\\0";
 	LPSTR curDirectory = const_cast<char *> (directory.c_str());
 	//als Arbeitsumgebung setzen
@@ -82,9 +83,8 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 		}
 		myfile.close();
 	}
-	else std::cout << "Unable to open file";
+	else std::cout << "Unable to open file "<<file<<"\n"<<" in "<<directory << std::endl;
 	//system("pause");
-
 	return lines;
 }
 
@@ -105,20 +105,24 @@ bool Speicher::WriteText(std::vector<std::string> lines,std::string file)
 
 std::string Speicher::FindFile(std::string file, std::string path, int random)
 {
-		HANDLE fHandle;
-		WIN32_FIND_DATA wfd;
-		LPSTR curDirectory = const_cast<char *> (path.c_str());
-		std::vector < std::string >  Dateien;
-		fHandle = FindFirstFile(curDirectory, &wfd);
-		FindNextFile(fHandle, &wfd);
-		FindNextFile(fHandle, &wfd);
-		do
-		{
-			Dateien.push_back( wfd.cFileName/*[i]*/);
-//			i++;
-		} while (FindNextFile(fHandle, &wfd));
-		FindClose(fHandle);
-		FilesImSpeicher = Dateien;
-		return Dateien.at(random%Dateien.size());
+	std::vector < std::string > Dateien =Speicher::FindFiles(path);
+	return Dateien.at(random%Dateien.size());
 }
 
+std::vector < std::string > Speicher::FindFiles(std::string path)
+{
+	HANDLE fHandle;
+	WIN32_FIND_DATA wfd;
+	LPSTR curDirectory = const_cast<char *> (path.c_str());
+	std::vector < std::string >  Dateien;
+	fHandle = FindFirstFile(curDirectory, &wfd);
+	FindNextFile(fHandle, &wfd);
+	FindNextFile(fHandle, &wfd);
+	do
+	{
+		Dateien.push_back(wfd.cFileName/*[i]*/);
+		//			i++;
+	} while (FindNextFile(fHandle, &wfd));
+	FindClose(fHandle);
+	return Dateien;
+}

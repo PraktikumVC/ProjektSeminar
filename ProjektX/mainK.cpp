@@ -98,6 +98,7 @@ int main(int argc, char **argv) {
 
 
   //Beschreibung für die Variablen: S.o.
+  /*
   // All command line arguments as member: Capital letters
   std::vector<std::string> alwayssplitvars;
   std::string depvarname=""; std::string predict = "";  std::string splitweights = ""; //std::string ordner = "";
@@ -112,14 +113,14 @@ int main(int argc, char **argv) {
   SplitRule splitrule=DEFAULT_SPLITRULE;  
   bool probability=false; bool replace=true;  bool verbose= true;  bool write= true;
   TreeType treetype=TREE_CLASSIFICATION;
- 
+ */
   Speicher Speicher; Mathe Mathe;
   std::vector<std::string> datfile;
   std::vector<std::string> polaritaet;
   std::string spacer = "  ";
   std::string filename = "data";
   std::string path = "";
-  int c; int r; int datfilesize;
+  int c; int r=0; int datfilesize;
 
   Speicher.verzeichnis = "C:\\";
  // Speicher.SetFolder("VCtrainingsdaten\\ZuBuD\\object0001.view03\\Hessian-Affine\\0");
@@ -141,63 +142,85 @@ int main(int argc, char **argv) {
   //Arbeit über SIFT-Deskriptor
   std::vector<std::string>lines;
   std::vector<std::string>ordner;
+  std::vector<std::string>kontext;
   std::string zwischenspeicher;
-  std::string zwischenspeicher2;
   std::string wasd;
-  std::string verzeichnis= "C:\\VC\\Training\\object0005.view02\\MSER\\";
+  std::string verzeichnis = "J:\\VC\\Training\\MLM"; // \\MLM
   std::string rootVerzeichnis=verzeichnis;
-  int random1;
-  int random2;  
-  Speicher.FindFile(filename, verzeichnis+"*", 0);
-  ordner = Speicher.FilesImSpeicher;
-  int ordnerSize=ordner.size();
+  int random1 = 0; int random2;  int random3;  int random4; int random5; int random6; int counter1 = 0; int counter0 = 0; int zwischenwert = 1; int anzahlSIFT0 = 20; int anzahlSIFT1 = 10;
+  ordner = Speicher.FindFiles( verzeichnis + "\\*");
+  int ordnerSize = 5;//ordner.size();
   std::cout << "Ordnergroesse:"<<ordnerSize << std::endl;
-  for (r = 0; r < 30; ++r) {	 
-	  random1 = Mathe.Random(ordnerSize - 101, true);
-	  random2 = Mathe.Random(ordnerSize - 101, true);
-	  std::cout << "random1 und 2:" << random1 <<" | " << random2 << " | " << Speicher.FilesImSpeicher.size() << std::endl;
-	  verzeichnis = verzeichnis + ordner.at(random1) ;
-	  while (random1%Speicher.FilesImSpeicher.size() == random2%Speicher.FilesImSpeicher.size()&& Speicher.FilesImSpeicher.size()>1)
-		  random2 = Mathe.Random(5, true);
-	  zwischenspeicher = Speicher.FindFile(filename, verzeichnis + "\\*.sift", random1);
-	  lines = Speicher.ReadText(verzeichnis, zwischenspeicher);
-	  datfile.push_back(lines.at(0));
-	  std::cout << "ZwSp:|" << zwischenspeicher << "| " << std::ends;
+  while (r < anzahlSIFT1+counter1) {	 
 	  lines.clear();
+	  random1 = Mathe.Random(zwischenwert, ordnerSize, true) ;
+	  while (random1 == 0)
+		  random1 = Mathe.Random(zwischenwert, ordnerSize,true) ;
+	  random2 = Mathe.Random(1, true);
+	  random3 = Mathe.Random(1, true);
+	  random4 = Mathe.Random(1, true);
+	  verzeichnis = Mathe.VerzeichnisErzeugen(random1); //random1.view03\MSER\
+
+	  zwischenspeicher = verzeichnis + Speicher.FindFile("", verzeichnis + "*", random2 )+"\\"; //random1.view03\MSER\random2\
 	  //_________________________________________________________________________________________________________________________________
-	//  zwischenspeicher2 = zwischenspeicher;	  
-	 // while (zwischenspeicher==zwischenspeicher2 && Speicher.FilesImSpeicher.size()>2)
-		  zwischenspeicher = Speicher.FindFile(filename, verzeichnis + "\\*.sift", random2);
-	  lines = Speicher.ReadText(verzeichnis, zwischenspeicher);
-	  std::cout << "ZwSp:|" << zwischenspeicher << "|| " << std::ends;
-	  datfile.at(r) = datfile.at(r) + " " + lines.at(0);
-	  datfile.at(r) = datfile.at(r) + " " + "1";
-	  random1 = 0; random2 = 0; lines.clear();
-	  verzeichnis = rootVerzeichnis;  
-	 
+	  try {	  
+		  lines.push_back(Speicher.ReadText(zwischenspeicher, Speicher.FindFile("", zwischenspeicher + "*.sift", random3)).at(0));  } //random1.view03\MSER\"random2"\"random3".sift
+
+	  catch (...)  {
+		  counter1 += 1;
+		  continue;
+	  }
+	  //_________________________________________________________________________________________________________________________________
+	  try { lines.push_back(Speicher.ReadText(zwischenspeicher, Speicher.FindFile("", zwischenspeicher + "*.sift", random4)).at(0)); }
+	  catch (...) {
+		  counter1 += 1;
+		  continue;
+	  }
+	  datfile.push_back(lines.at(0)+" "+lines.at(1)+" 1");
+	  kontext.push_back(zwischenspeicher + "\\" + Speicher.FindFile("", zwischenspeicher + "*.sift", random3));
+	  kontext.push_back(zwischenspeicher + "\\" + Speicher.FindFile("", zwischenspeicher + "*.sift", random4));
+	  r++;
   }
   std::cout << std::endl;
   std::cout << "end of polaritaet =1" << std::endl;
   datfilesize = datfile.size();
-  for (r = datfilesize; r < datfilesize+20; ++r) {
-	  random1 = Mathe.Random(5, true);
-	  random2 = Mathe.Random(5, true);
+  kontext.push_back("end of polaritaet =1");
+  r = 0;
+  while (r < anzahlSIFT0 + counter0) {
+	  random1 = 0;
+	  while (random1 == 0)
+		  random1 = Mathe.Random(zwischenwert, ordnerSize, true);
+	  random2 = random1;
 	  while (random1 == random2)
-		  random2 = Mathe.Random(5, true);
-	  zwischenspeicher2 = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\*", random1);
-	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\"+zwischenspeicher2+"\\*.sift", Mathe.Random(5, true));
-	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\" + zwischenspeicher2 , zwischenspeicher);
-	  std::cout << "ZwSp:|" << zwischenspeicher2 << "\\" << zwischenspeicher << "| " << std::ends;
-	  datfile.push_back(lines.at(0));
-	  lines.clear();
+		  random2 = Mathe.Random(zwischenwert, ordnerSize, true);
+	  random3 = Mathe.Random(1, true); random4 = Mathe.Random(1, true); random5 = Mathe.Random(1, true); random6 = Mathe.Random(1, true);
 	  //_________________________________________________________________________________________________________________________________
-	  zwischenspeicher = Speicher.FindFile(filename, "C:\\VC\\Training\\object0005.view01\\MSER\\0\\*.sift", Mathe.Random(5, true));
-	  lines = Speicher.ReadText("C:\\VC\\Training\\object0005.view01\\MSER\\0", zwischenspeicher);
-	  std::cout << "ZwSp:|" << zwischenspeicher << "| " << std::ends;
-	  datfile.at(r) = datfile.at(r) + " " + lines.at(0);
-	  datfile.at(r) = datfile.at(r) + " " + "0";
-	  std::cout << std::endl;
+	  verzeichnis = Mathe.VerzeichnisErzeugen(random1); //random1.view03\MSER\													
+	  zwischenspeicher = verzeichnis + Speicher.FindFile("", verzeichnis + "*", random3); //random1.view03\MSER\random3\ 
+	  try {
+		  lines.push_back(Speicher.ReadText(zwischenspeicher, Speicher.FindFile("", zwischenspeicher + "\\*.sift", random4)).at(0)); //random1.view03\MSER\random3\random4.sift
+	  }
+	  catch (...) {
+		  counter0 += 1;
+		  continue;
+	  }
+	  kontext.push_back(zwischenspeicher+"\\" +Speicher.FindFile("", zwischenspeicher + "\\*.sift", random4));
+//_________________________________________________________________________________________________________________________________
+	  verzeichnis = Mathe.VerzeichnisErzeugen(random2); //random2.view03\MSER\ 													
+	  zwischenspeicher = verzeichnis + Speicher.FindFile("", verzeichnis + "*", random5); //random2.view03\MSER\random5\ 
+	  try {
+		  lines.push_back(Speicher.ReadText(zwischenspeicher, Speicher.FindFile("", zwischenspeicher + "\\*.sift", random6)).at(0)); //random2.view03\MSER\random5\random6.sift 
+	  }
+	  catch (...) {
+		  counter0 += 1;
+		  continue;
+	  }
+	  kontext.push_back(zwischenspeicher + "\\" + Speicher.FindFile("", zwischenspeicher + "\\*.sift", random6));
+	  datfile.push_back(lines.at(0)+ " " + lines.at(1)+" 0");	  
+	  r++;
   }
+  std::cout << "end of polaritaet =0" << std::endl;
+  kontext.push_back("end of polaritaet =0");
   for (c = 0; c < Mathe.Random(5, true)+3;++c)  std::random_shuffle(datfile.begin(), datfile.end());
 
   std::vector<std::string>::iterator it2;
@@ -212,10 +235,14 @@ int main(int argc, char **argv) {
 	  wasd = datfile.at(r).back();
 	  polaritaet.push_back(wasd );
   }
-
+  filename = filename + std::to_string(zwischenwert) + "_" + std::to_string(ordnerSize) + "_" + std::to_string(anzahlSIFT1) + "_" + std::to_string(anzahlSIFT0);
+  kontext.push_back( "Fehlercounter:1: " + std::to_string(counter1) + "|0: " + std::to_string(counter0) );
+  kontext.push_back("Groesse von " + filename + ":" + std::to_string(datfile.size()));
   Speicher.WriteText(datfile, filename);
+  Speicher.WriteText(kontext, filename+"_kontext.txt");
   Speicher.WriteText(polaritaet, filename+"_pol.txt");
-  std::cout <<"Größe von "+filename+":"<< datfile.size()<<std::endl;
+  std::cout << "Fehlercounter:1: " << counter1 << "|0: " << counter0 << std::endl;
+  std::cout <<"Groesse von "+filename+":"<< datfile.size()<<std::endl;
   system("pause");
 
  /* 
