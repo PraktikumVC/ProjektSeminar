@@ -55,12 +55,12 @@ int Mathe::Random(int zahlA,int zahlB, bool echt)
 }
 int Mathe::Random(int zahl, bool echt)
 {
-	return Mathe::Random(0, zahl+100, echt);
+	return Mathe::Random(0, zahl+500, echt);
 }
 std::string Mathe::VerzeichnisErzeugen(std::string verzeichnis, int random) 
 {
 	if (verzeichnis.size() > 0)
-		return  verzeichnis + "\\object000" + std::to_string(random) + ".view03\\MSER\\";
+		return  verzeichnis + "\\object000" + std::to_string(random) + ".view03\\Hessian-Affine\\";
 	else
 		return Mathe::VerzeichnisErzeugen(random);
 }
@@ -69,5 +69,5 @@ std::string Mathe::VerzeichnisErzeugen(int random)
 	std::string root="J:\\VC\\Training\\MLM";
 	std::string rand = std::to_string(random / 100 % 10) + std::to_string(random / 10 % 10) + std::to_string(random % 10);
 
-	return root +  "\\object0" + rand + ".view03\\MSER\\";
+	return root +  "\\object0" + rand + ".view03\\Hessian-Affine\\";
 }

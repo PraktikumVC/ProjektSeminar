@@ -143,15 +143,17 @@ int main(int argc, char **argv) {
   std::vector<std::string>lines;
   std::vector<std::string>ordner;
   std::vector<std::string>kontext;
-  std::string zwischenspeicher;
+  std::string zwischenspeicher; std::string zwischenspeicher2; std::string zwischenspeicher3;
   std::string wasd;
   std::string verzeichnis = "J:\\VC\\Training\\MLM"; // \\MLM
   std::string rootVerzeichnis=verzeichnis;
-  int random1 = 0; int random2;  int random3;  int random4; int random5; int random6; int counter1 = 0; int counter0 = 0; int zwischenwert = 1; int anzahlSIFT0 = 20; int anzahlSIFT1 = 10;
+  uint random1 = 0; uint random2;  uint random3;  uint random4; uint random5; uint random6; uint counter1 = 0; uint counter0 = 0; 
+  
+  uint zwischenwert = 16; uint anzahlSIFT0 = 10000; uint anzahlSIFT1 = 10000;
   ordner = Speicher.FindFiles( verzeichnis + "\\*");
-  int ordnerSize = 5;//ordner.size();
+  uint ordnerSize = 30;//ordner.size();
   std::cout << "Ordnergroesse:"<<ordnerSize << std::endl;
-  while (r < anzahlSIFT1+counter1) {	 
+  while (r < anzahlSIFT1+counter1 && counter1<10000) {	 
 	  lines.clear();
 	  random1 = Mathe.Random(zwischenwert, ordnerSize, true) ;
 	  while (random1 == 0)
@@ -164,14 +166,24 @@ int main(int argc, char **argv) {
 	  zwischenspeicher = verzeichnis + Speicher.FindFile("", verzeichnis + "*", random2 )+"\\"; //random1.view03\MSER\random2\
 	  //_________________________________________________________________________________________________________________________________
 	  try {	  
-		  lines.push_back(Speicher.ReadText(zwischenspeicher, Speicher.FindFile("", zwischenspeicher + "*.sift", random3)).at(0));  } //random1.view03\MSER\"random2"\"random3".sift
-
+		  zwischenspeicher2 = Speicher.FindFile("", zwischenspeicher + "*.sift", random3);
+		  lines.push_back(Speicher.ReadText(zwischenspeicher, zwischenspeicher2 ).at(0));  } //random1.view03\MSER\"random2"\"random3".sift
 	  catch (...)  {
 		  counter1 += 1;
 		  continue;
 	  }
 	  //_________________________________________________________________________________________________________________________________
-	  try { lines.push_back(Speicher.ReadText(zwischenspeicher, Speicher.FindFile("", zwischenspeicher + "*.sift", random4)).at(0)); }
+	  try {
+		  if (Speicher.AnzahlFilesImSpeicher > 1)
+			  while (random3%Speicher.AnzahlFilesImSpeicher == random4%Speicher.AnzahlFilesImSpeicher)
+				  random3 = Mathe.Random(1, true);
+		  else
+			  throw (0);
+		zwischenspeicher2 = Speicher.FindFile("", zwischenspeicher + "*.sift", random3);			 
+		
+		 // std::cout<<zwischenspeicher2 <<"-"<< zwischenspeicher3 <<" || " <<std::ends;
+		  lines.push_back(Speicher.ReadText(zwischenspeicher, zwischenspeicher2 ).at(0));
+	  }  
 	  catch (...) {
 		  counter1 += 1;
 		  continue;
@@ -184,9 +196,9 @@ int main(int argc, char **argv) {
   std::cout << std::endl;
   std::cout << "end of polaritaet =1" << std::endl;
   datfilesize = datfile.size();
-  kontext.push_back("end of polaritaet =1");
+  kontext.push_back("end of polaritaet =1, r="+std::to_string(r));
   r = 0;
-  while (r < anzahlSIFT0 + counter0) {
+  while (r < anzahlSIFT0 + counter0 && counter0<10000) {
 	  random1 = 0;
 	  while (random1 == 0)
 		  random1 = Mathe.Random(zwischenwert, ordnerSize, true);

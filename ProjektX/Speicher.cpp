@@ -83,7 +83,7 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 		}
 		myfile.close();
 	}
-	else std::cout << "Unable to open file "<<file<<"\n"<<" in "<<directory << std::endl;
+	else throw( "Unable to open file "+file); // "\n"<<" in "<<directory <<
 	//system("pause");
 	return lines;
 }
@@ -106,6 +106,7 @@ bool Speicher::WriteText(std::vector<std::string> lines,std::string file)
 std::string Speicher::FindFile(std::string file, std::string path, int random)
 {
 	std::vector < std::string > Dateien =Speicher::FindFiles(path);
+	AnzahlFilesImSpeicher = Dateien.size();
 	return Dateien.at(random%Dateien.size());
 }
 
@@ -116,13 +117,16 @@ std::vector < std::string > Speicher::FindFiles(std::string path)
 	LPSTR curDirectory = const_cast<char *> (path.c_str());
 	std::vector < std::string >  Dateien;
 	fHandle = FindFirstFile(curDirectory, &wfd);
-	FindNextFile(fHandle, &wfd);
-	FindNextFile(fHandle, &wfd);
+	if (std::to_string(path.back())=="*") {
+		FindNextFile(fHandle, &wfd);
+		FindNextFile(fHandle, &wfd);
+	}
 	do
 	{
 		Dateien.push_back(wfd.cFileName/*[i]*/);
 		//			i++;
 	} while (FindNextFile(fHandle, &wfd));
 	FindClose(fHandle);
+	AnzahlFilesImSpeicher = Dateien.size();
 	return Dateien;
 }

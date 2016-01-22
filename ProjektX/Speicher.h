@@ -20,5 +20,6 @@ public:
 	std::vector<std::string> FindFiles(std::string path);
 	std::string verzeichnis= "C:\\";
 	std::vector < std::string >  FilesImSpeicher;
+	uint AnzahlFilesImSpeicher;
 };
 
