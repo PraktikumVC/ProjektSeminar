@@ -37,21 +37,8 @@ std::string Mathe::WinkelZuString(double winkel, double winkel2,double winkel3)
 }
 int Mathe::Random(int zahlA,int zahlB, bool echt)
 {
-	if (echt)
-	{
-		while (lastRandom == rand()% (zahlB - zahlA)+zahlA)
-			srand(time(0));
 		lastRandom = rand()  % ((zahlB-zahlA)+zahlA);
 		return lastRandom;
-	}
-	else
-	{
-		counterRandom = counterRandom + 1;
-		srand(counterRandom);
-		return rand()  % (zahlB - zahlA)+zahlA;
-	}
-
-
 }
 int Mathe::Random(int zahl, bool echt)
 {
@@ -59,7 +46,7 @@ int Mathe::Random(int zahl, bool echt)
 }
 int Mathe::Random( bool echt)
 {
-	srand(time(0));
+	//srand(time(0));
 	return rand() % INT_MAX;
 	//return Mathe::Random(0, INT_MAX, echt);
 }

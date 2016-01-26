@@ -94,7 +94,7 @@
 #include "Speicher.h"
 #include "Mathe.h"
 
-int main(int argc, char **argv) {	
+int mainK(int argc, char **argv) {	
 
 
   //Beschreibung für die Variablen: S.o.
@@ -122,6 +122,7 @@ int main(int argc, char **argv) {
   std::string path = "";
   int c; int r=0; int datfilesize;
 
+  srand(1);
   Speicher.verzeichnis = "C:\\";
  // Speicher.SetFolder("VCtrainingsdaten\\ZuBuD\\object0001.view03\\Hessian-Affine\\0");
     
@@ -149,9 +150,9 @@ int main(int argc, char **argv) {
   std::string rootVerzeichnis=verzeichnis;
   uint random1 = 0; uint random2;  uint random3;  uint random4; uint random5; uint random6; uint randPuffer; uint counter1 = 0; uint counter0 = 0; bool flag = false;
   
-  uint zwischenwert = 1; uint anzahlSIFT0 = 1000; uint anzahlSIFT1 = 1000;
+  uint zwischenwert = 16; uint anzahlSIFT0 = 10000; uint anzahlSIFT1 = 10000;
   ordner = Speicher.FindFiles( verzeichnis + "\\*");
-  uint ordnerSize = 15;//ordner.size();
+  uint ordnerSize = 31;//ordner.size();
   std::cout << "Ordnergroesse:"<<ordnerSize << std::endl;
   while ((r < (anzahlSIFT1 + counter1)) && (counter1<10000)) {
 	  flag = false;
@@ -159,9 +160,9 @@ int main(int argc, char **argv) {
 	  random1 = Mathe.Random(zwischenwert, ordnerSize, true) ;
 	  while (random1 == 0)
 		  random1 = Mathe.Random(zwischenwert, ordnerSize,true) ;
-	  random2 = Mathe.Random(1, true);
-	  random3 = Mathe.Random(1, true);
-	  random4 = Mathe.Random(1, true);
+	  random2 = Mathe.Random(true);
+	  random3 = Mathe.Random(true);
+	  random4 = Mathe.Random(true);
 	  verzeichnis = Mathe.VerzeichnisErzeugen(random1); //random1.view03\MSER\
 
 	  zwischenspeicher = verzeichnis + Speicher.FindFile("", verzeichnis + "*", random2 )+"\\"; //random1.view03\MSER\random2\
@@ -202,7 +203,7 @@ int main(int argc, char **argv) {
   kontext.push_back("end of polaritaet =1, r="+std::to_string(r));
   r = 0;
   random3 = 0; random4 = 0; random5 = 0; random6 = 0;
-  while ((r < (anzahlSIFT0+counter1 ) )&& (counter0<10000)) {
+  while (r < (anzahlSIFT0+counter1 ) ) {
 	  flag = false;
 	  lines.clear();
 	  randPuffer = random1;
@@ -213,11 +214,8 @@ int main(int argc, char **argv) {
 	  random2 = random1;
 	  while (random1 == random2||randPuffer==random2)
 		  random2 = Mathe.Random(zwischenwert, ordnerSize, true);
-	  std::cout << random3 << "|" << random4 << "|" << random5 << "|" << random6 << std::endl;
-	  randPuffer = random3;	  while (randPuffer == random3)	  random3 = Mathe.Random(true);
-	  randPuffer = random4;	  while (randPuffer == random4)	  random4 = Mathe.Random(true);
-	  randPuffer = random5;	  while (randPuffer == random5)	  random5 = Mathe.Random(true);
-	  randPuffer = random6;	  while (randPuffer == random6)	  random6 = Mathe.Random(true); 
+	  //std::cout << random3 << "|" << random4 << "|" << random5 << "|" << random6 << "||" << std::ends;
+	  random3 = Mathe.Random(true); random4 = Mathe.Random(true); random5 = Mathe.Random(true); random6 = Mathe.Random(true); 
 	  if (random3 == random5) random5 += 1;
 	  if (random4 == random6) random6 += 1;
 	  
@@ -225,8 +223,7 @@ int main(int argc, char **argv) {
 	  verzeichnis = Mathe.VerzeichnisErzeugen(rootVerzeichnis,random1); //random1.view03\MSER\													
 	  zwischenspeicher = verzeichnis + Speicher.FindFile("", verzeichnis + "*", random3); //random1.view03\MSER\random3\ 
 	  try {
-		  lines.push_back(Speicher.ReadText(zwischenspeicher, Speicher.FindFile("", zwischenspeicher + "\\*.sift", random4)).at(0)); //random1.view03\MSER\random3\random4.sift
-		  //std::cout  <<random4 <<"|-|" <<std::ends;
+		  lines.push_back(Speicher.ReadText(zwischenspeicher, Speicher.FindFile("", zwischenspeicher + "\\*.sift", random4)).at(0)); //random1.view03\MSER\random3\random4.sift		  
 	  }
 	  catch (...) {
 		  counter0 += 1;
@@ -251,7 +248,7 @@ int main(int argc, char **argv) {
   }
   std::cout << "end of polaritaet =0, r=" + std::to_string(r) << std::endl;
   kontext.push_back("end of polaritaet =0");
-  //for (c = 0; c < Mathe.Random(5, true)+3;++c)  std::random_shuffle(datfile.begin(), datfile.end());
+  for (c = 0; c < Mathe.Random(5, true)+3;++c)  std::random_shuffle(datfile.begin(), datfile.end());
 
   std::vector<std::string>::iterator it2;
   it2 = datfile.begin();

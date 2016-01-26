@@ -77,7 +77,7 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 				line.replace(line.find(" 0 "), 3, " 0.0 ");
 			};
 			n = std::count(line.begin(), line.end(), ' ');
-			if(n!=127)std::cout << "Number of Spaces:| " << n << " |---------------------------------------------------" << std::endl;
+			//if(n!=127)std::cout << "Number of Spaces:| " << n << " |---------------------------------------------------" << std::endl;
 			lines.push_back(line);
 			//std::cout << line << std::endl;
 		}

@@ -140,6 +140,7 @@
     <ClCompile Include="mainK.cpp" />
     <ClCompile Include="mainM.cpp" />
     <ClCompile Include="Mathe.cpp" />
+    <ClCompile Include="mainP.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Projektion.cpp" />
     <ClCompile Include="BerechnungKeypoints.cpp" />
