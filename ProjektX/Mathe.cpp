@@ -41,7 +41,7 @@ int Mathe::Random(int zahlA,int zahlB, bool echt)
 	{
 		while (lastRandom == rand()% (zahlB - zahlA)+zahlA)
 			srand(time(0));
-		lastRandom = rand()  % (zahlB-zahlA)+zahlA;
+		lastRandom = rand()  % ((zahlB-zahlA)+zahlA);
 		return lastRandom;
 	}
 	else
@@ -55,7 +55,13 @@ int Mathe::Random(int zahlA,int zahlB, bool echt)
 }
 int Mathe::Random(int zahl, bool echt)
 {
-	return Mathe::Random(0, zahl+500, echt);
+	return Mathe::Random(0, zahl + INT_MAX, echt);
+}
+int Mathe::Random( bool echt)
+{
+	srand(time(0));
+	return rand() % INT_MAX;
+	//return Mathe::Random(0, INT_MAX, echt);
 }
 std::string Mathe::VerzeichnisErzeugen(std::string verzeichnis, int random) 
 {
