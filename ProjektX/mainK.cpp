@@ -150,9 +150,9 @@ int mainK(int argc, char **argv) {
   std::string rootVerzeichnis=verzeichnis;
   uint random1 = 0; uint random2;  uint random3;  uint random4; uint random5; uint random6; uint randPuffer; uint counter1 = 0; uint counter0 = 0; bool flag = false;
   
-  uint zwischenwert = 16; uint anzahlSIFT0 = 10000; uint anzahlSIFT1 = 10000;
+  uint zwischenwert = 1; uint anzahlSIFT0 = 10000; uint anzahlSIFT1 = 10000;
   ordner = Speicher.FindFiles( verzeichnis + "\\*");
-  uint ordnerSize = 31;//ordner.size();
+  uint ordnerSize = 6;//ordner.size();
   std::cout << "Ordnergroesse:"<<ordnerSize << std::endl;
   while ((r < (anzahlSIFT1 + counter1)) && (counter1<10000)) {
 	  flag = false;
@@ -193,8 +193,8 @@ int mainK(int argc, char **argv) {
 	  }
 	  if (flag) continue;
 	  datfile.push_back(lines.at(0)+" "+lines.at(1)+" 1");
-	  kontext.push_back(zwischenspeicher + "\\" + Speicher.FindFile("", zwischenspeicher + "*.sift", random3));
-	  kontext.push_back(zwischenspeicher + "\\" + Speicher.FindFile("", zwischenspeicher + "*.sift", random4));
+	  kontext.push_back(zwischenspeicher +  Speicher.FindFile("", zwischenspeicher + "*.sift", random3));
+	  kontext.push_back(zwischenspeicher +  Speicher.FindFile("", zwischenspeicher + "*.sift", random4));
 	  r++;	  
   }
   std::cout << std::endl;
@@ -257,15 +257,19 @@ int mainK(int argc, char **argv) {
   for (c = 1; c < 256; ++c)
 	  datfile.at(0) = datfile.at(0) + spacer + "SIFT" + std::to_string(c);
   datfile.at(0) = datfile.at(0) + spacer + "polaritaet";
-
+  //datfile.at(0) = datfile.at(0) + spacer + "t";
   for (r = 0; r < datfile.size();++r) {
 	  wasd = datfile.at(r).back();
+	  /*
+	  datfile.at(r).pop_back();
+	  datfile.at(r).pop_back(); 
+	  /**/
 	  polaritaet.push_back(wasd );
   }
   filename = filename + std::to_string(zwischenwert) + "_" + std::to_string(ordnerSize) + "_" + std::to_string(anzahlSIFT1) + "_" + std::to_string(anzahlSIFT0);
   kontext.push_back( "Fehlercounter:1: " + std::to_string(counter1) + "|0: " + std::to_string(counter0) );
   kontext.push_back("Groesse von " + filename + ":" + std::to_string(datfile.size()));
-  Speicher.WriteText(datfile, filename);
+  Speicher.WriteText(datfile, filename+"_");
   Speicher.WriteText(kontext, filename+"_kontext.txt");
   Speicher.WriteText(polaritaet, filename+"_pol.txt");
   std::cout << "Fehlercounter:1: " << counter1 << "|0: " << counter0 << std::endl;

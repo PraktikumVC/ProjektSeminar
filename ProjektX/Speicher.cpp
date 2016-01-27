@@ -77,7 +77,7 @@ std::vector<std::string> Speicher::ReadText(std::string directory, std::string f
 				line.replace(line.find(" 0 "), 3, " 0.0 ");
 			};
 			n = std::count(line.begin(), line.end(), ' ');
-			//if(n!=127)std::cout << "Number of Spaces:| " << n << " |---------------------------------------------------" << std::endl;
+			if(n!=127&&n>5)std::cout << "Number of Spaces:| " << n << " |---------------------------------------------------" << std::endl;
 			lines.push_back(line);
 			//std::cout << line << std::endl;
 		}
@@ -102,7 +102,20 @@ bool Speicher::WriteText(std::vector<std::string> lines,std::string file)
 	std::cout << "file " +file+" saved and closed" << std::endl;
 	return true;
 }
-
+bool Speicher::WriteText(std::vector<std::string> lines, std::string file,std::string directory)
+{
+	std::string buf = directory;
+	LPSTR curDirectory = const_cast<char *> (buf.c_str());
+	//als Arbeitsumgebung setzen
+	SetFolder(buf);
+	std::ofstream myfile(file);
+	for (int i = 0; i < lines.size(); ++i) {
+		myfile << lines.at(i) << std::endl;
+	}
+	myfile.close();
+	std::cout << "file " + file + " saved and closed" << std::endl;
+	return true;
+}
 std::string Speicher::FindFile(std::string file, std::string path, int random)
 {
 	std::vector < std::string > Dateien =Speicher::FindFiles(path);

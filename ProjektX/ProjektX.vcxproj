@@ -139,6 +139,7 @@
     <ClCompile Include="KeyPointProjektor.cpp" />
     <ClCompile Include="mainK.cpp" />
     <ClCompile Include="mainM.cpp" />
+    <ClCompile Include="MainVisual.cpp" />
     <ClCompile Include="Mathe.cpp" />
     <ClCompile Include="mainP.cpp" />
     <ClCompile Include="Source.cpp" />
