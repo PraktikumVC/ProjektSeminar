@@ -150,10 +150,11 @@ int mainK(int argc, char **argv) {
   std::string rootVerzeichnis=verzeichnis;
   uint random1 = 0; uint random2;  uint random3;  uint random4; uint random5; uint random6; uint randPuffer; uint counter1 = 0; uint counter0 = 0; bool flag = false;
   
-  uint zwischenwert = 1; uint anzahlSIFT0 = 10000; uint anzahlSIFT1 = 10000;
+  uint zwischenwert = 1; 
   ordner = Speicher.FindFiles( verzeichnis + "\\*");
-  uint ordnerSize = 6;//ordner.size();
-  std::cout << "Ordnergroesse:"<<ordnerSize << std::endl;
+  uint ordnerSize = 18;//ordner.size();
+  uint anzahlSIFT0 = (ordnerSize-zwischenwert)*2000; uint anzahlSIFT1 = anzahlSIFT0;
+  std::cout << "Ordner "<<zwischenwert<<" bis "<<ordnerSize <<" mit "<<anzahlSIFT0<<" Deskriptoren"<< std::endl;
   while ((r < (anzahlSIFT1 + counter1)) && (counter1<10000)) {
 	  flag = false;
 	  lines.clear();

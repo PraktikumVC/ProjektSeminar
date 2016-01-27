@@ -11,13 +11,13 @@
 #include "Speicher.h"
 #include "Mathe.h"
 
-int main(int argc, char **argv) {
+int mainP(int argc, char **argv) {
 	/*
 	IN SPEICHER die Ausgabe für n<127 auskommentieren!!!!
 	*/
 	Speicher Speicher; Mathe Mathe;
 	std::string file = "25_31_10000_10000";
-	std::string directory1 = "J:\\VC\\exe\\test "+file+"\\"; std::string directory2 = "C:\\VC\\Ranger"; 
+	std::string directory1 = "J:\\VC\\exe\\test "+file+"\\"; std::string directory2 = "C:\\VC\\Ranger\\"; 
 	std::string file1 = "ranger_out.prediction"; std::string file2 = "data"+file+"_pol.txt"; std::vector<std::string> predicted; std::vector<std::string> produced; 
 	uint einseins=0; uint nulleins = 0; uint einsnull = 0; uint nullnull = 0; uint r = 0; uint x = 0; uint y = 0;
 	predicted = Speicher.ReadText(directory1, file1);
