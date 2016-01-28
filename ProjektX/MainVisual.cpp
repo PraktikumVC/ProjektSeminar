@@ -1,4 +1,3 @@
-#include <iostream>
 #include <fstream>
 #include <stdexcept>
 #include <string>
@@ -9,18 +8,12 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "globals.h"
-#include "ForestClassification.h"
-#include "ForestRegression.h"
-#include "ForestSurvival.h"
-#include "ForestProbability.h"
-
 #include "Speicher.h"
-#include "Mathe.h"
 /**
 * @brief tmlm.cpp
 * @author Lukas Roth
 */
-
+/*
 #include "ImageWarper.hpp"
 
 #include "hesaff/pyramid.h"
@@ -1139,7 +1132,7 @@ int main(int argc, char** argv)
 				}
 			}//für jedes warp			
 		}//für jeden Detektor
-		if (image_iter > 1)
+		if (image_iter > 0)
 		{				 
 			std::vector<Descriptor>rangerPredicted;
 			std::vector<Descriptor>descriptorsUnMatched;			
