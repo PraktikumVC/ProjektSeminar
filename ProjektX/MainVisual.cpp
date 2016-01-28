@@ -1142,8 +1142,8 @@ int main(int argc, char** argv)
 		if (image_iter > 1)
 		{				 
 			std::vector<Descriptor>rangerPredicted;
-			std::vector<Descriptor>descriptorsUnMatched;
-			std::vector<Descriptor>descriptorsMatched;
+			std::vector<Descriptor>descriptorsUnMatched;			
+			std::vector<std::vector<Descriptor>>descriptorsMatched;
 			cv::Mat image= image_color;
 
 			for (uint i = 0; i < descriptors.size(); ++i)
@@ -1156,14 +1156,23 @@ int main(int argc, char** argv)
 								
 				///rangerPredicted aufräumen
 
-				//Matches einzeichnen
-				image = drawMatches("", 1, image, image_last, descriptors.at(i), descriptorsMatched, magnificationFactor);
-				//Bild mit Matches abspeichern / anzeigen				
-				cv::imwrite("Image.jpg", image);
-				cv::imshow("Image.jpg", image);
+				//einspeichern der positiven Matches
+				for (uint j = 0; j < rangerPredicted.size(); ++j)
+				{
+					descriptorsMatched.at(0).push_back(descriptors.at(i));
+					descriptorsMatched.at(1).push_back( rangerPredicted.at(j));
+				}
+				
+				
 
 			}
+			//Matches einzeichnen
+			image = drawMatches("", 1, image, image_last, descriptorsMatched.at(0), descriptorsMatched.at(1), magnificationFactor);
+			//Bild mit Matches abspeichern / anzeigen				
+			cv::imwrite("Image.jpg", image);
+			cv::imshow("Image.jpg", image);
 			/// add unmatched descriptors from j to descriptorsunMatched with X+col and y+row !!
+
 
 			drawMissMatch("", 1, image, descriptorsUnMatched, magnificationFactor);
 
