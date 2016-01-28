@@ -20,7 +20,7 @@
 * @brief tmlm.cpp
 * @author Lukas Roth
 */
-/*
+
 #include "ImageWarper.hpp"
 
 #include "hesaff/pyramid.h"
@@ -642,7 +642,52 @@ cv::Mat extractNormalizedAndOrientedPatch(cv::Mat& src, cv::RotatedRect rr, cv::
 	return cropped;
 }
 
-void drawMatches(const std::string& title, const int delay, const cv::Mat& image1, const cv::Mat& image2, const std::vector<Descriptor>& descriptors1, const std::vector<Descriptor>& descriptors2, float magnificationFactor)
+cv::Mat drawMatches(const std::string& title, const int delay, const cv::Mat& image1, const cv::Mat& image2, const Descriptor& descriptor, const std::vector<Descriptor>& descriptors2, float magnificationFactor)
+{
+	//CV_Assert(image1.type() == image2.type() && descriptors1.size() == descriptors2.size());
+	cv::Mat drawing = cv::Mat::zeros(cv::Size(image1.cols + image2.cols, std::max(image1.rows, image2.rows)), CV_8UC3);
+	cv::Rect rect1(0, 0, image1.cols, image1.rows);
+	cv::Rect rect2(image1.cols, 0, image2.cols, image2.rows);
+
+	// Allow color drawing
+	if (image1.channels() == 1)
+	{
+		cv::Mat image1Copy(image1.size(), CV_8U), image2Copy(image2.size(), CV_8U);
+		image1.convertTo(image1Copy, CV_8U);
+		image2.convertTo(image2Copy, CV_8U);
+		cv::cvtColor(image1Copy, drawing(rect1), CV_GRAY2BGR);
+		cv::cvtColor(image2Copy, drawing(rect2), CV_GRAY2BGR);
+	}
+	if (image1.channels() == 3)
+	{
+		image1.convertTo(drawing(rect1), CV_8UC3);
+		image2.convertTo(drawing(rect2), CV_8UC3);
+	}
+
+	cv::RotatedRect rr1, rr2;
+	float angle1, angle2;
+	cv::Scalar color1 = cv::Scalar(255, 0, 0);
+	cv::Scalar color2 = cv::Scalar(0, 255, 0);
+	for (int i = 0; i < descriptors2.size(); ++i)
+	{
+		rr1 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptor.x, descriptor.y), (cv::Mat_<float>(2, 2) << descriptor.a, descriptor.b, descriptor.b, descriptor.c), magnificationFactor);
+		rr2 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptors2[i].x, descriptors2[i].y), (cv::Mat_<float>(2, 2) << descriptors2[i].a, descriptors2[i].b, descriptors2[i].b, descriptors2[i].c), magnificationFactor);
+		rr2.center.x = rr2.center.x + image1.cols;
+		angle1 = -rr1.angle / 180 * static_cast<float>(CV_PI);
+		angle2 = -rr2.angle / 180 * static_cast<float>(CV_PI);
+
+		cv::line(drawing, rr1.center, rr2.center, color1, 1, CV_AA, 0);
+		cv::ellipse(drawing, rr1, color2, 1, CV_AA);
+		cv::line(drawing, rr1.center, cv::Point2f(rr1.center.x + cos(angle1) * rr1.size.width * 0.5f, rr1.center.y - sin(angle1) * rr1.size.width * 0.5f), color2, 1, CV_AA, 0);
+		//cv::putText(drawing, std::to_string(static_cast<long long>(i)), rr1.center, CV_FONT_HERSHEY_COMPLEX, 0.5, color2);
+		cv::ellipse(drawing, rr2, color2, 1, CV_AA);
+		cv::line(drawing, rr2.center, cv::Point2f(rr2.center.x + cos(angle2) * rr2.size.width * 0.5f, rr2.center.y - sin(angle2) * rr2.size.width * 0.5f), color2, 1, CV_AA, 0);
+		//cv::putText(drawing, std::to_string(static_cast<long long>(i)), rr2.center, CV_FONT_HERSHEY_COMPLEX, 0.5, color2);
+	}
+
+	cv::imshow(title, drawing);
+	return drawing;
+}cv::Mat drawMatches(const std::string& title, const int delay, const cv::Mat& image1, const cv::Mat& image2, const std::vector<Descriptor>& descriptors1, const std::vector<Descriptor>& descriptors2, float magnificationFactor)
 {
 	CV_Assert(image1.type() == image2.type() && descriptors1.size() == descriptors2.size());
 	cv::Mat drawing = cv::Mat::zeros(cv::Size(image1.cols + image2.cols, std::max(image1.rows, image2.rows)), CV_8UC3);
@@ -686,7 +731,7 @@ void drawMatches(const std::string& title, const int delay, const cv::Mat& image
 	}
 
 	cv::imshow(title, drawing);
-	cv::waitKey(delay);
+	return drawing;
 }
 void drawMissMatch(const std::string& title, const int delay, const cv::Mat& image1, const std::vector<Descriptor>& descriptors1, float magnificationFactor) 
 {
@@ -728,6 +773,33 @@ std::vector<std::string> floatToString(std::vector<float> floats) {
 	for (uint i = 0; i < floats.size(); ++i)
 		buffer.push_back(std::to_string(floats.at(i)));
 	return buffer;
+}
+//returns predicted NONmatches from 'descriptor' in 'descriptors' and writes matches in 'descriptors'
+std::vector<Descriptor> rangerCheck(std::vector<Descriptor> descriptors, Descriptor descriptor)
+{
+	Speicher Speicher;
+	std::vector<Descriptor> rangerPredicted;
+	std::vector<Descriptor> rangerMissMatch;
+	std::vector<std::string>rangerSetUp;
+	//construct ranger input
+	for (uint j = 0; j < descriptors.size(); ++j)
+		rangerSetUp.push_back(std::to_string(descriptor.data.at(0)) + std::to_string(descriptors.at(j).data.at(0)));
+	Speicher.WriteText(rangerSetUp, "data.dat", "J:\\VC\\Ranger\\");
+	//run Ranger 
+	WinExec("J:\\VC\\Ranger\\Ranger.exe", SW_SHOWNORMAL);
+	rangerSetUp.clear();
+	//fill rangerSetUp with "ranger_out.prediction"
+	rangerSetUp = Speicher.ReadText("J:\\VC\\Ranger\\", "ranger_out.prediction");
+	//find "1 " in rangerSetUp and set flag
+
+	for (uint k = 0; k < rangerSetUp.size(); ++k)
+		//rangerPredicted hat Einträge von allen zu descriptor.at(i) passenden
+		if (rangerSetUp.at(k) == "1 ")
+			rangerPredicted.push_back(descriptors.at(k));
+		else
+			rangerMissMatch.push_back(descriptors.at(k));
+	descriptors = rangerPredicted;
+	return rangerMissMatch;
 }
 
 int main(int argc, char** argv)
@@ -1068,50 +1140,33 @@ int main(int argc, char** argv)
 			}//für jedes warp			
 		}//für jeden Detektor
 		if (image_iter > 1)
-		{
-			
-			// RANGER	descriptors+descriptorsLast in ranger, 		 
-			std::vector<std::string>rangerSetUp;
-			std::vector<int>rangerPredicted;
+		{				 
+			std::vector<Descriptor>rangerPredicted;
 			std::vector<Descriptor>descriptorsUnMatched;
-			uint i;
+			std::vector<Descriptor>descriptorsMatched;
+			cv::Mat image= image_color;
+
 			for (uint i = 0; i < descriptors.size(); ++i)
 			{
-				//construct ranger input
-				for (uint j = 0; j < descriptorsLast.size(); ++j)
-				rangerSetUp.push_back(std::to_string( descriptors.at(i).data.at(0)) + std::to_string(descriptorsLast.at(j).data.at(0)) );
-				Speicher.WriteText(rangerSetUp, "data.dat", "J:\\VC\\Ranger\\");
-				//run Ranger 
-				WinExec("J:\\VC\\Ranger\\Ranger.exe", SW_SHOWNORMAL);
-				rangerSetUp.clear();
-				//fill rangerSetUp with "ranger_out.prediction"
-				rangerSetUp = Speicher.ReadText("J:\\VC\\Ranger\\", "ranger_out.prediction");
-				//find "1 " in rangerSetUp and set flag
-				
-				for (i = 0; i < rangerSetUp.size();++i)
-					if (rangerSetUp.at(i) == "1 ")
-					{
-						flag = true;
-						break;
-					}
-				//rangerPredicted hat -1 für keinen Treffer oder >=0 für Position in descriptorsLast
-				if (flag)
-					rangerPredicted.push_back(i);
-				else
-					rangerPredicted.push_back(-1);
-			}			
-			for (uint i = 0; i < descriptors.size(); ++i)
-				if (rangerPredicted.at(i + 1) < 0)
-				{
-					descriptorsUnMatched.push_back(descriptors.at(i));
-					descriptors.erase(descriptors.begin()+ i);
-				}
-				else
-					//descriptors.at(x) == descriptorsLast.at( rangerPredicted.at(x+1) )
-					drawMatches("", 1, image_color, image_last, descriptors, descriptorsLast, magnificationFactor);
-					
-			
-			drawMissMatch("", 1, image_color, descriptorsUnMatched, magnificationFactor);
+				rangerPredicted.clear();				
+				//rangerPredicted hat Einträge von allen zu descriptor.at(i) passenden
+				rangerPredicted = descriptorsLast;
+				//save descriptors to "data.dat" and find "1 " in ranger_out.prediction. return Unmatched descriptors and save matched ones to first input.
+				descriptorsUnMatched = rangerCheck(rangerPredicted, descriptors.at(i));
+								
+				///rangerPredicted aufräumen
+
+				//Matches einzeichnen
+				image = drawMatches("", 1, image, image_last, descriptors.at(i), descriptorsMatched, magnificationFactor);
+				//Bild mit Matches abspeichern / anzeigen				
+				cv::imwrite("Image.jpg", image);
+				cv::imshow("Image.jpg", image);
+
+			}
+			/// add unmatched descriptors from j to descriptorsunMatched with X+col and y+row !!
+
+			drawMissMatch("", 1, image, descriptorsUnMatched, magnificationFactor);
+
 		}
 		else
 		{
