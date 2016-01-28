@@ -896,7 +896,7 @@ int main(int argc, char** argv)
 		std::cout << "Processing image " << image_iter + 1 << " of " << files.size() << " (" << files[image_iter].stem().string() << ")" << std::endl;
 		// Detect features
 		std::vector<Descriptor> descriptors;
-		
+		bool flag;
 		for (int detector_iter = 0; detector_iter < params_mods.size(); ++detector_iter)
 		{
 			// Create directory for each detector
@@ -929,7 +929,7 @@ int main(int argc, char** argv)
 			// Remove improper features
 			for (int i = 0; i < descriptors.size(); )
 			{
-				if (isOutsideImageBoundary(image_gray, descriptors[i], 0) || /*isTooElongated(descriptors[i]) || */hasNonPositiveDeterminant(descriptors[i]))
+				if (isOutsideImageBoundary(image_gray, descriptors[i], 0) || hasNonPositiveDeterminant(descriptors[i])) //isTooElongated(descriptors[i]) || 
 				{
 					descriptors.erase(descriptors.begin() + i);
 				}
@@ -1070,30 +1070,47 @@ int main(int argc, char** argv)
 		if (image_iter > 1)
 		{
 			
-			/* RANGER	descriptors+descriptorsLast in ranger, 		 */
+			// RANGER	descriptors+descriptorsLast in ranger, 		 
 			std::vector<std::string>rangerSetUp;
 			std::vector<int>rangerPredicted;
-			for (uint i = 0; i < descriptors.size(); ++i)
-
-
-				for (uint j = 0; j < descriptorsLast.size(); ++j)
-					rangerSetUp.push_back(std::to_string( descriptors.at(i).data.at(0)) + std::to_string(descriptorsLast.at(j).data.at(0)) );
-			Speicher.WriteText(rangerSetUp, "data.dat", "J:\\VC\\Ranger\\");
-			//run Ranger 
-			WinExec("J:\\VC\\Ranger\\Ranger.exe", SW_SHOWNORMAL);
-			rangerSetUp.clear();
-			//fill rangerSetUp with "ranger_out.prediction"
-			rangerSetUp = Speicher.ReadText("J:\\VC\\Ranger\\", "ranger_out.prediction");
-			//rangerPredicted hat -1 für keinen Treffer oder >=0 für Position in descriptorsLast
 			std::vector<Descriptor>descriptorsUnMatched;
+			uint i;
+			for (uint i = 0; i < descriptors.size(); ++i)
+			{
+				//construct ranger input
+				for (uint j = 0; j < descriptorsLast.size(); ++j)
+				rangerSetUp.push_back(std::to_string( descriptors.at(i).data.at(0)) + std::to_string(descriptorsLast.at(j).data.at(0)) );
+				Speicher.WriteText(rangerSetUp, "data.dat", "J:\\VC\\Ranger\\");
+				//run Ranger 
+				WinExec("J:\\VC\\Ranger\\Ranger.exe", SW_SHOWNORMAL);
+				rangerSetUp.clear();
+				//fill rangerSetUp with "ranger_out.prediction"
+				rangerSetUp = Speicher.ReadText("J:\\VC\\Ranger\\", "ranger_out.prediction");
+				//find "1 " in rangerSetUp and set flag
+				
+				for (i = 0; i < rangerSetUp.size();++i)
+					if (rangerSetUp.at(i) == "1 ")
+					{
+						flag = true;
+						break;
+					}
+				//rangerPredicted hat -1 für keinen Treffer oder >=0 für Position in descriptorsLast
+				if (flag)
+					rangerPredicted.push_back(i);
+				else
+					rangerPredicted.push_back(-1);
+			}			
 			for (uint i = 0; i < descriptors.size(); ++i)
 				if (rangerPredicted.at(i + 1) < 0)
 				{
 					descriptorsUnMatched.push_back(descriptors.at(i));
 					descriptors.erase(descriptors.begin()+ i);
 				}
+				else
+					//descriptors.at(x) == descriptorsLast.at( rangerPredicted.at(x+1) )
+					drawMatches("", 1, image_color, image_last, descriptors, descriptorsLast, magnificationFactor);
 					
-			drawMatches("", 1, image_color, image_last, descriptors, descriptorsLast, magnificationFactor);
+			
 			drawMissMatch("", 1, image_color, descriptorsUnMatched, magnificationFactor);
 		}
 		else
