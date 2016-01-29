@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Headerdateien\mser">
+      <UniqueIdentifier>{ca6a001d-e1df-4509-98e4-bbe5ef40a01d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\hesaff">
+      <UniqueIdentifier>{d4de0ca8-e731-441d-9e23-91808e3bb8b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\mser">
+      <UniqueIdentifier>{4a45d5be-3e26-4199-be14-fbc6ef2d6dda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\hessaff">
+      <UniqueIdentifier>{9dfcbca9-9566-4f1a-8e35-951c8c30b7ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Projektion.cpp">
@@ -75,9 +87,6 @@
     <ClCompile Include="TreeSurvival.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="App.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="ForestProbability.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -99,29 +108,35 @@
     <ClCompile Include="tpm.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="hesaff\affine.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="hesaff\helpers.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="hesaff\pyramid.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="hesaff\siftdesc.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="mser\affine.cpp">
+    <ClCompile Include="ImageWarper.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="mser\mipmap.cpp">
-      <Filter>Quelldateien</Filter>
+      <Filter>Quelldateien\mser</Filter>
     </ClCompile>
     <ClCompile Include="mser\mser.cpp">
-      <Filter>Quelldateien</Filter>
+      <Filter>Quelldateien\mser</Filter>
     </ClCompile>
     <ClCompile Include="mser\sift.cpp">
+      <Filter>Quelldateien\mser</Filter>
+    </ClCompile>
+    <ClCompile Include="mser\affine.cpp">
+      <Filter>Quelldateien\mser</Filter>
+    </ClCompile>
+    <ClCompile Include="hesaff\affine.cpp">
+      <Filter>Quelldateien\hessaff</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="hesaff\helpers.cpp">
+      <Filter>Quelldateien\hessaff</Filter>
+    </ClCompile>
+    <ClCompile Include="hesaff\pyramid.cpp">
+      <Filter>Quelldateien\hessaff</Filter>
+    </ClCompile>
+    <ClCompile Include="hesaff\siftdesc.cpp">
+      <Filter>Quelldateien\hessaff</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -191,29 +206,32 @@
     <ClInclude Include="utility.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="hesaff\affine.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="hesaff\helpers.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="hesaff\pyramid.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="hesaff\siftdesc.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="mser\affine.h">
+    <ClInclude Include="ImageWarper.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="mser\mipmap.h">
-      <Filter>Headerdateien</Filter>
+      <Filter>Headerdateien\mser</Filter>
     </ClInclude>
     <ClInclude Include="mser\mser.h">
-      <Filter>Headerdateien</Filter>
+      <Filter>Headerdateien\mser</Filter>
     </ClInclude>
     <ClInclude Include="mser\sift.h">
-      <Filter>Headerdateien</Filter>
+      <Filter>Headerdateien\mser</Filter>
+    </ClInclude>
+    <ClInclude Include="hesaff\affine.h">
+      <Filter>Headerdateien\hesaff</Filter>
+    </ClInclude>
+    <ClInclude Include="hesaff\helpers.h">
+      <Filter>Headerdateien\hesaff</Filter>
+    </ClInclude>
+    <ClInclude Include="hesaff\pyramid.h">
+      <Filter>Headerdateien\hesaff</Filter>
+    </ClInclude>
+    <ClInclude Include="hesaff\siftdesc.h">
+      <Filter>Headerdateien\hesaff</Filter>
+    </ClInclude>
+    <ClInclude Include="mser\affine.h">
+      <Filter>Headerdateien\mser</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

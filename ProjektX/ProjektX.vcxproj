@@ -85,11 +85,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(OPENCV_DIR)\..\..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OPENCV_DIR)\..\..\include;J:\VC\boost_1_60_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OPENCV_DIR)\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OPENCV_DIR)\lib;J:\VC\boost_1_60_0\stage\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_ts300d.lib;opencv_world300d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -114,13 +114,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(OPENCV_DIR)\..\..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>J:\VC\boost_1_60_0;$(OPENCV_DIR)\..\..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OPENCV_DIR)\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>J:\VC\boost_1_60_0\stage\lib;$(OPENCV_DIR)\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_ts300.lib;opencv_world300.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -139,6 +139,7 @@
     <ClCompile Include="hesaff\helpers.cpp" />
     <ClCompile Include="hesaff\pyramid.cpp" />
     <ClCompile Include="hesaff\siftdesc.cpp" />
+    <ClCompile Include="ImageWarper.cpp" />
     <ClCompile Include="KeyPointDetektor.cpp" />
     <ClCompile Include="KeyPointProjektor.cpp" />
     <ClCompile Include="mainK.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="hesaff\helpers.h" />
     <ClInclude Include="hesaff\pyramid.h" />
     <ClInclude Include="hesaff\siftdesc.h" />
+    <ClInclude Include="ImageWarper.hpp" />
     <ClInclude Include="KeyPointDetektor.h" />
     <ClInclude Include="KeyPointProjektor.h" />
     <ClInclude Include="Mathe.h" />

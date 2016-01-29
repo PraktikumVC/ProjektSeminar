@@ -2,6 +2,7 @@
 * @brief tpm.cpp
 * @author Lukas Roth
 */
+/*
 #include <fstream>
 #include <stdexcept>
 #include <string>
@@ -694,6 +695,7 @@ void drawMatches(const std::string& title, const int delay, const cv::Mat& image
 		//cv::putText(drawing, std::to_string(static_cast<long long>(i)), rr2.center, CV_FONT_HERSHEY_COMPLEX, 0.5, color3);
 	}
 	*/
+/*
 	for(int i = 0; i < descriptors1.size(); ++i)
 	{
 		rr1 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptors1[i].x, descriptors1[i].y), (cv::Mat_<float>(2, 2) << descriptors1[i].a, descriptors1[i].b, descriptors1[i].b, descriptors1[i].c), 1.0f);
@@ -747,8 +749,8 @@ std::vector<Descriptor> rangerCheck(std::vector<Descriptor> descriptors)
 	descriptors = rangerPredicted;
 	return rangerMissMatch;
 }
-int main(int argc, char** argv)
-{
+int mainT(int argc, char** argv)
+{/*
 	if(argc != 4)
 	{
 		std::cout << "Usage: " << argv[0] << " <image 1> <image 2> <config file>" << std::endl;
@@ -787,6 +789,7 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	*/
+	/*
 	// Set MSER and Hessian-Affine parameters
 	//MSERParams params_mser(2, 30, 0.01f, 0.25f, 0.2f);
 	//HessianAffineParams params_ha(0, 3, 16.0f / 3.0f, 10.0f, 0.01f);
@@ -851,7 +854,7 @@ int main(int argc, char** argv)
 		// Remove improper features
 		for(int i = 0; i < descriptors1.size(); )
 		{
-			if(isOutsideImageBoundary(image1_gray, descriptors1[i], imageMargin) || /*isTooElongated(descriptors1[i]) || */hasNonPositiveDeterminant(descriptors1[i]))
+			if(isOutsideImageBoundary(image1_gray, descriptors1[i], imageMargin) || hasNonPositiveDeterminant(descriptors1[i])) //isTooElongated(descriptors1[i]) || 
 			{
 				descriptors1.erase(descriptors1.begin() + i);
 			}
@@ -873,6 +876,7 @@ int main(int argc, char** argv)
 			}
 		}
 	*/
+/*
 		// Display matches
 		drawMatches("Display matches", displayDelay, image1_color, descriptors1, descriptors2);
 
@@ -887,7 +891,7 @@ int main(int argc, char** argv)
 		}
 
 
-		/* RANGER _______________________________________-----------------______________________________*/
+		// RANGER _______________________________________-----------------______________________________
 		std::vector<Descriptor>descriptorsGood = descriptors1;
 		//use Ranger to predict
 		std::vector<Descriptor>descriptorsBad = rangerCheck(descriptorsGood);
@@ -1007,6 +1011,6 @@ int main(int argc, char** argv)
 
 		// Display matches
 		drawMatches("Display matches", displayDelay, image1_color, image2_color, desc_pos_1, desc_pos_2, desc_neg_1, desc_neg_2);
-		*/
+		
 	}
-}
+}*/

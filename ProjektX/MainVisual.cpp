@@ -13,7 +13,7 @@
 * @brief tmlm.cpp
 * @author Lukas Roth
 */
-/*
+
 #include "ImageWarper.hpp"
 
 #include "hesaff/pyramid.h"
@@ -21,13 +21,14 @@
 #include "hesaff/siftdesc.h"
 #include "mser/mser.h"
 #include "mser/sift.h"
+#include "mser/affine.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
-#include <libconfig.h++>
+//#include <libconfig.h++>
 
 #include <iostream>
 
@@ -63,7 +64,7 @@ struct WarpConfiguration
 	{
 	}
 };
-
+/*
 struct MSERParams
 {
 	int delta;
@@ -81,6 +82,7 @@ struct MSERParams
 	{
 	}
 };
+*/
 
 struct HessianAffineParams
 {
@@ -247,7 +249,7 @@ void createWarpConfiguration(const MODSParams& params, WarpConfiguration& warpCo
 		}
 	}
 }
-
+/*
 void detectMSER(const cv::Mat& image, std::vector<Descriptor>& descriptors, const MSERParams& params1, const SIFTParams& params2)
 {
 	// Convert image from CV_32F to CV_8U
@@ -312,7 +314,7 @@ void detectMSER(const cv::Mat& image, std::vector<Descriptor>& descriptors, cons
 			++i;
 		}
 	}
-}
+}*/
 
 void detectHessianAffine(const cv::Mat& image, std::vector<Descriptor>& descriptors, const HessianAffineParams& params1, const SIFTParams& params2)
 {
@@ -471,7 +473,7 @@ cv::RotatedRect getRotatedRectFromCovarianceMatrix(cv::Point2f pt, cv::Mat C, fl
 {
 	// Get the eigenvalues and eigenvectors
 	cv::Mat eigenvalues, eigenvectors;
-	cv::eigen(C, true, eigenvalues, eigenvectors);
+	cv::eigen(C,eigenvalues, eigenvectors);
 
 	// Calculate the angle between the largest eigenvector and the x-axis
 	float angle = atan2(eigenvectors.at<float>(0, 1), eigenvectors.at<float>(0, 0));
@@ -795,14 +797,14 @@ std::vector<Descriptor> rangerCheck(std::vector<Descriptor> descriptors, Descrip
 	return rangerMissMatch;
 }
 
-int main(int argc, char** argv)
+int mainV(int argc, char** argv)
 {
 	if (argc != 2)
 	{
 		std::cout << "Usage: " << argv[0] << " <config file>" << std::endl;
 		return EXIT_FAILURE;
 	}
-
+	/*
 	// Read config file
 	libconfig::Config cfg;
 	try
@@ -818,7 +820,7 @@ int main(int argc, char** argv)
 	{
 		std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine() << " - " << pex.getError() << std::endl;
 		return EXIT_FAILURE;
-	}
+	}*/
 
 	// Set MODS parameters
 	std::vector<float> tilts;
@@ -836,86 +838,83 @@ int main(int argc, char** argv)
 	//scales.push_back(0.125f);
 	//params_mods.push_back(MODSParams(1.0f, tilts, scales, 360.0f));
 	tilts.clear();
-	tilts.resize(cfg.lookup("MODSParams.MSER.tilts").getLength());
+	tilts.resize(4);//cfg.lookup("MODSParams.MSER.tilts").getLength());
+	/*
 	for (int i = 0; i < tilts.size(); i++)
 	{
 		tilts[i] = static_cast<float>(cfg.lookup("MODSParams.MSER.tilts")[i]);
-	}
+	}*/
+	tilts[0] = 1;
+	tilts[1] = 3;
+	tilts[2] = 6;
+	tilts[3] = 9;
 	scales.clear();
-	scales.resize(cfg.lookup("MODSParams.MSER.scales").getLength());
-	for (int i = 0; i < scales.size(); i++)
+	scales.resize(3);//cfg.lookup("MODSParams.MSER.scales").getLength());
+	/*for (int i = 0; i < scales.size(); i++)
 	{
 		scales[i] = static_cast<float>(cfg.lookup("MODSParams.MSER.scales")[i]);
-	}
-	params_mods.push_back(MODSParams(cfg.lookup("MODSParams.MSER.sigma"), tilts, scales, cfg.lookup("MODSParams.MSER.angle")));
+	}*/
+	scales.push_back(1);
+	scales.push_back(0.25);
+	scales.push_back(0.125);
+	//params_mods.push_back(MODSParams(cfg.lookup("MODSParams.MSER.sigma"), tilts, scales, cfg.lookup("MODSParams.MSER.angle")));
+	params_mods.push_back(MODSParams(1, tilts, scales, 360));
 	// Hessian-Affine
-	//tilts.clear();
-	//tilts.push_back(1.0f);
-	//tilts.push_back(2.0f);
-	//tilts.push_back(4.0f);
-	//tilts.push_back(6.0f);
-	//tilts.push_back(8.0f);
-	//scales.clear();
-	//scales.push_back(1.0f);
-	//params_mods.push_back(MODSParams(1.0f, tilts, scales, 60.0f));
 	tilts.clear();
-	tilts.resize(cfg.lookup("MODSParams.HessianAffine.tilts").getLength());
-	for (int i = 0; i < tilts.size(); i++)
-	{
-		tilts[i] = static_cast<float>(cfg.lookup("MODSParams.HessianAffine.tilts")[i]);
-	}
+	tilts.push_back(1.0f);
+	tilts.push_back(2.0f);
+	tilts.push_back(4.0f);
+	tilts.push_back(6.0f);
+	tilts.push_back(8.0f);
 	scales.clear();
-	scales.resize(cfg.lookup("MODSParams.HessianAffine.scales").getLength());
-	for (int i = 0; i < scales.size(); i++)
-	{
-		scales[i] = static_cast<float>(cfg.lookup("MODSParams.HessianAffine.scales")[i]);
-	}
-	params_mods.push_back(MODSParams(cfg.lookup("MODSParams.HessianAffine.sigma"), tilts, scales, cfg.lookup("MODSParams.HessianAffine.angle")));
+	scales.push_back(1.0f);
+	params_mods.push_back(MODSParams(1.0f, tilts, scales, 60.0f));
 
 	// Set MSER and Hessian-Affine parameters
 	//MSERParams params_mser(2, 30, 0.01f, 0.25f, 0.2f);
 	//HessianAffineParams params_ha(0, 3, 16.0f / 3.0f, 10.0f, 0.01f);
 	//SIFTParams params_sift(0, - 1, 3, 20, 3.0f * sqrt(3.0f), 1.0f);
+	/*
 	MSERParams params_mser(
-		static_cast<int>(cfg.lookup("MSERParams.delta")),
-		static_cast<int>(cfg.lookup("MSERParams.minArea")),
-		static_cast<float>(cfg.lookup("MSERParams.maxArea")),
-		static_cast<float>(cfg.lookup("MSERParams.maxVariation")),
-		static_cast<float>(cfg.lookup("MSERParams.minDiversity"))
+		static_cast<int>(2),//cfg.lookup("MSERParams.delta")),
+		static_cast<int>(30),//cfg.lookup("MSERParams.minArea")),
+		static_cast<float>(0.01),//cfg.lookup("MSERParams.maxArea")),
+		static_cast<float>(0.25),//cfg.lookup("MSERParams.maxVariation")),
+		static_cast<float>(0.2)//cfg.lookup("MSERParams.minDiversity"))
 		);
+		*/
 	HessianAffineParams params_ha(
-		static_cast<int>(cfg.lookup("HessianAffineParams.firstOctave")),
-		static_cast<int>(cfg.lookup("HessianAffineParams.octaveResolution")),
-		static_cast<float>(cfg.lookup("HessianAffineParams.peakThreshold")),
-		static_cast<float>(cfg.lookup("HessianAffineParams.edgeThreshold")),
-		static_cast<float>(cfg.lookup("HessianAffineParams.laplacianPeakThreshold"))
+		static_cast<int>(0),//cfg.lookup("HessianAffineParams.firstOctave")),
+		static_cast<int>(3),//cfg.lookup("HessianAffineParams.octaveResolution")),
+		static_cast<float>(5.3333333333333333333333333333333),//cfg.lookup("HessianAffineParams.peakThreshold")),
+		static_cast<float>(10),//cfg.lookup("HessianAffineParams.edgeThreshold")),
+		static_cast<float>(0.01)//cfg.lookup("HessianAffineParams.laplacianPeakThreshold"))
 		);
 	SIFTParams params_sift(
-		static_cast<int>(cfg.lookup("SIFTParams.method")),
-		static_cast<int>(cfg.lookup("SIFTParams.firstOctave")),
-		static_cast<int>(cfg.lookup("SIFTParams.octaveResolution")),
-		static_cast<int>(cfg.lookup("SIFTParams.patchResolution")),
-		static_cast<float>(cfg.lookup("SIFTParams.patchRelativeExtent")),
-		static_cast<float>(cfg.lookup("SIFTParams.patchRelativeSmoothing"))
+		static_cast<int>(0),//cfg.lookup("SIFTParams.method")),
+		static_cast<int>(-1),//cfg.lookup("SIFTParams.firstOctave")),
+		static_cast<int>(3),//cfg.lookup("SIFTParams.octaveResolution")),
+		static_cast<int>(20),//cfg.lookup("SIFTParams.patchResolution")),
+		static_cast<float>(5.1961524227066318805823390245176),//cfg.lookup("SIFTParams.patchRelativeExtent")),
+		static_cast<float>(1)//cfg.lookup("SIFTParams.patchRelativeSmoothing"))
 		);
-
 	// Set other parameters
-	std::string fileExtension = static_cast<std::string>(cfg.lookup("fileExtension").c_str());
-	bool useColor = static_cast<bool>(cfg.lookup("useColor"));
-	int method = static_cast<int>(cfg.lookup("method"));
-	int antialiasing = static_cast<int>(cfg.lookup("antialiasing"));
-	float magnificationFactor = static_cast<float>(cfg.lookup("magnificationFactor"));
-	float minimumPatchSize = static_cast<float>(cfg.lookup("minimumPatchSize"));
-	int patchSize = static_cast<int>(cfg.lookup("patchSize"));
-	bool adjustOrientation = static_cast<bool>(cfg.lookup("adjustOrientation"));
-	bool describePatchWithSIFT = static_cast<bool>(cfg.lookup("describePatchWithSIFT"));
-	int whereToDescribe = static_cast<int>(cfg.lookup("whereToDescribe"));
-	bool writeToDisk = static_cast<bool>(cfg.lookup("writeToDisk"));
-	bool displayPatch = static_cast<bool>(cfg.lookup("displayPatch"));
-	bool displayAffineRegions = static_cast<bool>(cfg.lookup("displayAffineRegions"));
+	std::string fileExtension = static_cast<std::string>(".jpg");// cfg.lookup("fileExtension").c_str());
+	bool useColor = static_cast<bool>(true);// cfg.lookup("useColor"));
+	int method = static_cast<int>(0);// cfg.lookup("method"));
+	int antialiasing = static_cast<int>(1);//cfg.lookup("antialiasing"));
+	float magnificationFactor = static_cast<float>(1);//cfg.lookup("magnificationFactor"));
+	float minimumPatchSize = static_cast<float>(3);//cfg.lookup("minimumPatchSize"));
+	int patchSize = static_cast<int>(31);//cfg.lookup("patchSize"));
+	bool adjustOrientation = static_cast<bool>(true);//cfg.lookup("adjustOrientation"));
+	bool describePatchWithSIFT = static_cast<bool>(true);//cfg.lookup("describePatchWithSIFT"));
+	int whereToDescribe = static_cast<int>(0);//cfg.lookup("whereToDescribe"));
+	bool writeToDisk = static_cast<bool>(true);//cfg.lookup("writeToDisk"));
+	bool displayPatch = static_cast<bool>(true);//cfg.lookup("displayPatch"));
+	bool displayAffineRegions = static_cast<bool>(true);//cfg.lookup("displayAffineRegions"));
 
 	// Define input path
-	boost::filesystem::path inputPath(cfg.lookup("inputPath").c_str());
+	boost::filesystem::path inputPath("C:\VC\\in");//cfg.lookup("inputPath").c_str());
 
 	// Check if input path exists
 	if (!boost::filesystem::exists(inputPath) || !boost::filesystem::is_directory(inputPath))
@@ -925,7 +924,7 @@ int main(int argc, char** argv)
 	}
 
 	// Define output path
-	boost::filesystem::path outputPath(cfg.lookup("outputPath").c_str());
+	boost::filesystem::path outputPath("C:\VC\\out");//cfg.lookup("outputPath").c_str());
 	boost::filesystem::create_directory(outputPath);
 
 	// Find all images
@@ -967,7 +966,7 @@ int main(int argc, char** argv)
 			// Create directory for each detector
 			boost::filesystem::path detectorPath = imagePath;
 
-			
+			/*
 			//MSER
 			if (detector_iter == 0)
 			{
@@ -978,7 +977,7 @@ int main(int argc, char** argv)
 				// Create directory for MSER
 				detectorPath += "/MSER";
 				boost::filesystem::create_directory(detectorPath);
-			}
+			}*/
 			//Hessian-Affine
 			if (detector_iter == 1)
 			{
