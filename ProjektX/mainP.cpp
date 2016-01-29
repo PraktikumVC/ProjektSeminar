@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 	if (x < y) x = y;
 	for (r = 1; r < x - 1; ++r)
 	{
-		if (predicted.at(r) == produced.at(r).back+" ")
+		if (predicted.at(r) == produced.at(r).back()+" ")
 			if (predicted.at(r) == (std::to_string(1) + " "))
 				einseins += 1;
 			else

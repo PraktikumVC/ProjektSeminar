@@ -660,14 +660,14 @@ cv::Mat drawMatches(const std::string& title, const int delay, const cv::Mat& im
 	}
 
 	cv::RotatedRect rr1, rr2;
-	float angle1, angle2; std::vector<uint>::iterator  it; uint found;
+	float angle1, angle2; std::vector<uint>::iterator  it; uint found=1;
 	cv::Scalar color1 = cv::Scalar(255, 0, 0);
 	cv::Scalar color2 = cv::Scalar(0, 255, 0);
 	for (int i = 0; i < descriptors1.size(); ++i)
 		for (int j = 0; j < descriptors2.size();++j)
 		{
-			it = std::find(predicted.at(i).begin(), predicted.at(i).end(), descriptors2.at(j));
-			found = *it;
+			//it = std::find(predicted.at(i).begin(), predicted.at(i).end(), descriptors2.at(j));
+			//found = *it;
 			if(found>=0)
 			{
 		
@@ -952,7 +952,7 @@ int mainV(int argc, char** argv)
 			createWarpConfiguration(params_mods[detector_iter], warpConfiguration);
 
 			int numWarps = static_cast<int>(warpConfiguration.theta.size());
-			
+
 			std::vector<cv::Mat> warpedImages(numWarps, cv::Mat());
 			for (int i = 0; i < numWarps; ++i)
 			{
@@ -1067,39 +1067,40 @@ int mainV(int argc, char** argv)
 				}//für Deskriptor.size
 
 				std::cout << "Saved " << count << " patches" << std::endl;
-				
+
 				// Display affine regions
 				if (displayAffineRegions)
 				{
 					//drawMatches("Display affine regions", 1, image_color, warpedImages[i], descriptors, wdesc, magnificationFactor);
 				}
-			}//für jedes warp			
+			}//für jedes warp
 		}*/
 		//für jeden Detektor
-		if (image_iter > 0)
-		{				 
-			std::vector<std::vector<uint>>rangerPredicted;
-			cv::Mat image= image_color;
+			if (image_iter > 0)
+			{
+				std::vector<std::vector<uint>>rangerPredicted;
+				cv::Mat image = image_color;
 
-			rangerPredicted=rangerCheck(descriptorsLast, descriptors);
-								
+				rangerPredicted = rangerCheck(descriptorsLast, descriptors);
+
 				///rangerPredicted aufräumen
 
 				//einspeichern der positiven Matches
-				
-			//Matches einzeichnen
-			image = drawMatches("", 1, image, image_last, descriptorsLast, descriptors, rangerPredicted, magnificationFactor);
-			//Bild mit Matches abspeichern / anzeigen				
-			cv::imwrite("Image.jpg", image);
-			cv::imshow("Image.jpg", image);
 
-		}
-		else
-		{
-			// Detect features from picture before
-			std::vector<Descriptor> descriptorsLast = descriptors;
-			//save image for later use
-			cv::Mat image_last = image_color;
+			//Matches einzeichnen
+				image = drawMatches("", 1, image, image_last, descriptorsLast, descriptors, rangerPredicted, magnificationFactor);
+				//Bild mit Matches abspeichern / anzeigen				
+				cv::imwrite("Image.jpg", image);
+				cv::imshow("Image.jpg", image);
+
+			}
+			else
+			{
+				// Detect features from picture before
+				std::vector<Descriptor> descriptorsLast = descriptors;
+				//save image for later use
+				cv::Mat image_last = image_color;
+			}
 		}
 	}//für jedes Bild
 }/**/
