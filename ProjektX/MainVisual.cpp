@@ -637,52 +637,7 @@ cv::Mat extractNormalizedAndOrientedPatch(cv::Mat& src, cv::RotatedRect rr, cv::
 	return cropped;
 }
 
-cv::Mat drawMatches(const std::string& title, const int delay, const cv::Mat& image1, const cv::Mat& image2, const Descriptor& descriptor, const std::vector<Descriptor>& descriptors2, float magnificationFactor)
-{
-	//CV_Assert(image1.type() == image2.type() && descriptors1.size() == descriptors2.size());
-	cv::Mat drawing = cv::Mat::zeros(cv::Size(image1.cols + image2.cols, std::max(image1.rows, image2.rows)), CV_8UC3);
-	cv::Rect rect1(0, 0, image1.cols, image1.rows);
-	cv::Rect rect2(image1.cols, 0, image2.cols, image2.rows);
-
-	// Allow color drawing
-	if (image1.channels() == 1)
-	{
-		cv::Mat image1Copy(image1.size(), CV_8U), image2Copy(image2.size(), CV_8U);
-		image1.convertTo(image1Copy, CV_8U);
-		image2.convertTo(image2Copy, CV_8U);
-		cv::cvtColor(image1Copy, drawing(rect1), CV_GRAY2BGR);
-		cv::cvtColor(image2Copy, drawing(rect2), CV_GRAY2BGR);
-	}
-	if (image1.channels() == 3)
-	{
-		image1.convertTo(drawing(rect1), CV_8UC3);
-		image2.convertTo(drawing(rect2), CV_8UC3);
-	}
-
-	cv::RotatedRect rr1, rr2;
-	float angle1, angle2;
-	cv::Scalar color1 = cv::Scalar(255, 0, 0);
-	cv::Scalar color2 = cv::Scalar(0, 255, 0);
-	for (int i = 0; i < descriptors2.size(); ++i)
-	{
-		rr1 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptor.x, descriptor.y), (cv::Mat_<float>(2, 2) << descriptor.a, descriptor.b, descriptor.b, descriptor.c), magnificationFactor);
-		rr2 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptors2[i].x, descriptors2[i].y), (cv::Mat_<float>(2, 2) << descriptors2[i].a, descriptors2[i].b, descriptors2[i].b, descriptors2[i].c), magnificationFactor);
-		rr2.center.x = rr2.center.x + image1.cols;
-		angle1 = -rr1.angle / 180 * static_cast<float>(CV_PI);
-		angle2 = -rr2.angle / 180 * static_cast<float>(CV_PI);
-
-		cv::line(drawing, rr1.center, rr2.center, color1, 1, CV_AA, 0);
-		cv::ellipse(drawing, rr1, color2, 1, CV_AA);
-		cv::line(drawing, rr1.center, cv::Point2f(rr1.center.x + cos(angle1) * rr1.size.width * 0.5f, rr1.center.y - sin(angle1) * rr1.size.width * 0.5f), color2, 1, CV_AA, 0);
-		//cv::putText(drawing, std::to_string(static_cast<long long>(i)), rr1.center, CV_FONT_HERSHEY_COMPLEX, 0.5, color2);
-		cv::ellipse(drawing, rr2, color2, 1, CV_AA);
-		cv::line(drawing, rr2.center, cv::Point2f(rr2.center.x + cos(angle2) * rr2.size.width * 0.5f, rr2.center.y - sin(angle2) * rr2.size.width * 0.5f), color2, 1, CV_AA, 0);
-		//cv::putText(drawing, std::to_string(static_cast<long long>(i)), rr2.center, CV_FONT_HERSHEY_COMPLEX, 0.5, color2);
-	}
-
-	cv::imshow(title, drawing);
-	return drawing;
-}cv::Mat drawMatches(const std::string& title, const int delay, const cv::Mat& image1, const cv::Mat& image2, const std::vector<Descriptor>& descriptors1, const std::vector<Descriptor>& descriptors2, float magnificationFactor)
+cv::Mat drawMatches(const std::string& title, const int delay, const cv::Mat& image1, const cv::Mat& image2, const std::vector<Descriptor>& descriptors1, const std::vector<Descriptor>& descriptors2, std::vector<std::vector<uint>>& predicted, float magnificationFactor)
 {
 	CV_Assert(image1.type() == image2.type() && descriptors1.size() == descriptors2.size());
 	cv::Mat drawing = cv::Mat::zeros(cv::Size(image1.cols + image2.cols, std::max(image1.rows, image2.rows)), CV_8UC3);
@@ -705,64 +660,36 @@ cv::Mat drawMatches(const std::string& title, const int delay, const cv::Mat& im
 	}
 
 	cv::RotatedRect rr1, rr2;
-	float angle1, angle2;
+	float angle1, angle2; std::vector<uint>::iterator  it; uint found;
 	cv::Scalar color1 = cv::Scalar(255, 0, 0);
 	cv::Scalar color2 = cv::Scalar(0, 255, 0);
 	for (int i = 0; i < descriptors1.size(); ++i)
-	{
-		rr1 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptors1[i].x, descriptors1[i].y), (cv::Mat_<float>(2, 2) << descriptors1[i].a, descriptors1[i].b, descriptors1[i].b, descriptors1[i].c), magnificationFactor);
-		rr2 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptors2[i].x, descriptors2[i].y), (cv::Mat_<float>(2, 2) << descriptors2[i].a, descriptors2[i].b, descriptors2[i].b, descriptors2[i].c), magnificationFactor);
-		rr2.center.x = rr2.center.x + image1.cols;
-		angle1 = -rr1.angle / 180 * static_cast<float>(CV_PI);
-		angle2 = -rr2.angle / 180 * static_cast<float>(CV_PI);
+		for (int j = 0; j < descriptors2.size();++j)
+		{
+			it = std::find(predicted.at(i).begin(), predicted.at(i).end(), descriptors2.at(j));
+			found = *it;
+			if(found>=0)
+			{
+		
+			rr1 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptors1[i].x, descriptors1[i].y), (cv::Mat_<float>(2, 2) << descriptors1[i].a, descriptors1[i].b, descriptors1[i].b, descriptors1[i].c), magnificationFactor);
+			rr2 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptors2[j].x, descriptors2[j].y), (cv::Mat_<float>(2, 2) << descriptors2[j].a, descriptors2[j].b, descriptors2[j].b, descriptors2[j].c), magnificationFactor);
+			rr2.center.x = rr2.center.x + image1.cols;
+			angle1 = -rr1.angle / 180 * static_cast<float>(CV_PI);
+			angle2 = -rr2.angle / 180 * static_cast<float>(CV_PI);
 
-		cv::line(drawing, rr1.center, rr2.center, color1, 1, CV_AA, 0);
-		cv::ellipse(drawing, rr1, color2, 1, CV_AA);
-		cv::line(drawing, rr1.center, cv::Point2f(rr1.center.x + cos(angle1) * rr1.size.width * 0.5f, rr1.center.y - sin(angle1) * rr1.size.width * 0.5f), color2, 1, CV_AA, 0);
-		//cv::putText(drawing, std::to_string(static_cast<long long>(i)), rr1.center, CV_FONT_HERSHEY_COMPLEX, 0.5, color2);
-		cv::ellipse(drawing, rr2, color2, 1, CV_AA);
-		cv::line(drawing, rr2.center, cv::Point2f(rr2.center.x + cos(angle2) * rr2.size.width * 0.5f, rr2.center.y - sin(angle2) * rr2.size.width * 0.5f), color2, 1, CV_AA, 0);
-		//cv::putText(drawing, std::to_string(static_cast<long long>(i)), rr2.center, CV_FONT_HERSHEY_COMPLEX, 0.5, color2);
-	}
-
+			cv::line(drawing, rr1.center, rr2.center, color1, 1, CV_AA, 0);
+			cv::ellipse(drawing, rr1, color2, 1, CV_AA);
+			cv::line(drawing, rr1.center, cv::Point2f(rr1.center.x + cos(angle1) * rr1.size.width * 0.5f, rr1.center.y - sin(angle1) * rr1.size.width * 0.5f), color2, 1, CV_AA, 0);
+			//cv::putText(drawing, std::to_string(static_cast<long long>(i)), rr1.center, CV_FONT_HERSHEY_COMPLEX, 0.5, color2);
+			cv::ellipse(drawing, rr2, color2, 1, CV_AA);
+			cv::line(drawing, rr2.center, cv::Point2f(rr2.center.x + cos(angle2) * rr2.size.width * 0.5f, rr2.center.y - sin(angle2) * rr2.size.width * 0.5f), color2, 1, CV_AA, 0);
+			//cv::putText(drawing, std::to_string(static_cast<long long>(i)), rr2.center, CV_FONT_HERSHEY_COMPLEX, 0.5, color2);
+			}
+		}
 	cv::imshow(title, drawing);
 	return drawing;
 }
-void drawMissMatch(const std::string& title, const int delay, const cv::Mat& image1, const std::vector<Descriptor>& descriptors1, float magnificationFactor) 
-{
-	//CV_Assert(image1.type() == image2.type() && descriptors1.size() == descriptors2.size());
-	cv::Mat drawing = cv::Mat::zeros(cv::Size(image1.cols , image1.rows), CV_8UC3);
-	cv::Rect rect1(0, 0, image1.cols, image1.rows);
 
-	// Allow color drawing
-	if (image1.channels() == 1)
-	{
-		cv::Mat image1Copy(image1.size(), CV_8U);
-		image1.convertTo(image1Copy, CV_8U);
-		cv::cvtColor(image1Copy, drawing(rect1), CV_GRAY2BGR);
-	}
-	if (image1.channels() == 3)
-	{
-		image1.convertTo(drawing(rect1), CV_8UC3);
-	}
-
-	cv::RotatedRect rr1;
-	float angle1;
-	cv::Scalar color1 = cv::Scalar(0, 0, 255);
-	for (int i = 0; i < descriptors1.size(); ++i)
-	{
-		rr1 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptors1[i].x, descriptors1[i].y), 
-			(cv::Mat_<float>(2, 2) << descriptors1[i].a, descriptors1[i].b, descriptors1[i].b, descriptors1[i].c), magnificationFactor);
-		angle1 = -rr1.angle / 180 * static_cast<float>(CV_PI);
-		
-		cv::ellipse(drawing, rr1, color1, 1, CV_AA);
-		cv::line(drawing, rr1.center, cv::Point2f(rr1.center.x + cos(angle1) * rr1.size.width * 0.5f, rr1.center.y - sin(angle1) * rr1.size.width * 0.5f), color1, 1, CV_AA, 0);
-		//cv::putText(drawing, std::to_string(static_cast<long long>(i)), rr1.center, CV_FONT_HERSHEY_COMPLEX, 0.5, color2);		
-	}
-
-	cv::imshow(title, drawing);
-	cv::waitKey(delay);
-}
 std::vector<std::string> floatToString(std::vector<float> floats) {
 	std::vector<std::string> buffer;
 	for (uint i = 0; i < floats.size(); ++i)
@@ -770,31 +697,48 @@ std::vector<std::string> floatToString(std::vector<float> floats) {
 	return buffer;
 }
 //returns predicted NONmatches from 'descriptor' in 'descriptors' and writes matches in 'descriptors'
-std::vector<Descriptor> rangerCheck(std::vector<Descriptor> descriptors, Descriptor descriptor)
+std::vector<std::vector<uint>> rangerCheck(std::vector<Descriptor> descriptors1, std::vector<Descriptor> descriptors2)
 {
 	Speicher Speicher;
 	std::vector<Descriptor> rangerPredicted;
-	std::vector<Descriptor> rangerMissMatch;
+	std::vector<std::vector<uint>> rangerMatch;
 	std::vector<std::string>rangerSetUp;
+	std::string speicher;
 	//construct ranger input
-	for (uint j = 0; j < descriptors.size(); ++j)
-		rangerSetUp.push_back(std::to_string(descriptor.data.at(0)) + std::to_string(descriptors.at(j).data.at(0)));
+	//für jeden Deskriptor
+	for (uint x = 0; x < descriptors1.size(); ++x)
+		//für zum Deskriptor x gehörende Deskriptoren
+		for (uint y = 0; y < descriptors2.size();++y)
+		{	
+			//jeden Deskriptor aus y einlesen
+			for (uint m = 0; m < descriptors2.at(y).data.size(); ++m)
+				speicher = speicher + std::to_string(descriptors2.at(y).data.at(m))+" ";
+			//mit Deskriptor x abspeichern
+			for (uint m = 0; m < descriptors1.at(x).data.size(); ++m)
+				speicher = speicher + std::to_string(descriptors1.at(x).data.at(m)) + " ";
+		speicher.pop_back();
+		rangerSetUp.push_back(speicher);
+		speicher.clear();
+	}
+	
+
 	Speicher.WriteText(rangerSetUp, "data.dat", "J:\\VC\\Ranger\\");
 	//run Ranger 
-	WinExec("J:\\VC\\Ranger\\Ranger.exe", SW_SHOWNORMAL);
-	rangerSetUp.clear();
+	system("J:\\VC\\Ranger\\Ranger.exe");
+	rangerSetUp.clear();	
 	//fill rangerSetUp with "ranger_out.prediction"
 	rangerSetUp = Speicher.ReadText("J:\\VC\\Ranger\\", "ranger_out.prediction");
 	//find "1 " in rangerSetUp and set flag
-
-	for (uint k = 0; k < rangerSetUp.size(); ++k)
-		//rangerPredicted hat Einträge von allen zu descriptor.at(i) passenden
-		if (rangerSetUp.at(k) == "1 ")
-			rangerPredicted.push_back(descriptors.at(k));
-		else
-			rangerMissMatch.push_back(descriptors.at(k));
-	descriptors = rangerPredicted;
-	return rangerMissMatch;
+	for (uint y = 0; y < descriptors1.size(); ++y) 
+	{
+		uint abschnitt =(rangerSetUp.size() /descriptors1.size())*(y+1);
+		for (uint k = 1; k < abschnitt; ++k)
+			//rangerPredicted hat Einträge von allen zu descriptor.at(i) passenden
+			if (rangerSetUp.at(k) == "1 ")
+				rangerMatch.at(y).push_back(k-1);
+	}
+	
+	return rangerMatch;
 }
 
 int mainV(int argc, char** argv)
@@ -1002,13 +946,13 @@ int mainV(int argc, char** argv)
 					++i;
 				}
 			}
-
+			/*
 			// Create warp configuration
 			WarpConfiguration warpConfiguration;
 			createWarpConfiguration(params_mods[detector_iter], warpConfiguration);
 
 			int numWarps = static_cast<int>(warpConfiguration.theta.size());
-
+			
 			std::vector<cv::Mat> warpedImages(numWarps, cv::Mat());
 			for (int i = 0; i < numWarps; ++i)
 			{
@@ -1127,46 +1071,27 @@ int mainV(int argc, char** argv)
 				// Display affine regions
 				if (displayAffineRegions)
 				{
-					drawMatches("Display affine regions", 1, image_color, warpedImages[i], descriptors, wdesc, magnificationFactor);
+					//drawMatches("Display affine regions", 1, image_color, warpedImages[i], descriptors, wdesc, magnificationFactor);
 				}
 			}//für jedes warp			
-		}//für jeden Detektor
+		}*/
+		//für jeden Detektor
 		if (image_iter > 0)
 		{				 
-			std::vector<Descriptor>rangerPredicted;
-			std::vector<Descriptor>descriptorsUnMatched;			
-			std::vector<std::vector<Descriptor>>descriptorsMatched;
+			std::vector<std::vector<uint>>rangerPredicted;
 			cv::Mat image= image_color;
 
-			for (uint i = 0; i < descriptors.size(); ++i)
-			{
-				rangerPredicted.clear();				
-				//rangerPredicted hat Einträge von allen zu descriptor.at(i) passenden
-				rangerPredicted = descriptorsLast;
-				//save descriptors to "data.dat" and find "1 " in ranger_out.prediction. return Unmatched descriptors and save matched ones to first input.
-				descriptorsUnMatched = rangerCheck(rangerPredicted, descriptors.at(i));
+			rangerPredicted=rangerCheck(descriptorsLast, descriptors);
 								
 				///rangerPredicted aufräumen
 
 				//einspeichern der positiven Matches
-				for (uint j = 0; j < rangerPredicted.size(); ++j)
-				{
-					descriptorsMatched.at(0).push_back(descriptors.at(i));
-					descriptorsMatched.at(1).push_back( rangerPredicted.at(j));
-				}
 				
-				
-
-			}
 			//Matches einzeichnen
-			image = drawMatches("", 1, image, image_last, descriptorsMatched.at(0), descriptorsMatched.at(1), magnificationFactor);
+			image = drawMatches("", 1, image, image_last, descriptorsLast, descriptors, rangerPredicted, magnificationFactor);
 			//Bild mit Matches abspeichern / anzeigen				
 			cv::imwrite("Image.jpg", image);
 			cv::imshow("Image.jpg", image);
-			/// add unmatched descriptors from j to descriptorsunMatched with X+col and y+row !!
-
-
-			drawMissMatch("", 1, image, descriptorsUnMatched, magnificationFactor);
 
 		}
 		else
