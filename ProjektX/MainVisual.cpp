@@ -1073,17 +1073,16 @@ int mainV(int argc, char** argv)
 		//für jeden Detektor
 			if (image_iter > 0)
 			{
-				cv::Mat rangerPredicted;
 				cv::Mat image = image_color;
 
-				rangerPredicted = rangerCheck(descriptorsLast, descriptors);
+				rangerCheck(descriptorsLast, descriptors);
 
 				///rangerPredicted aufräumen
 
 				//einspeichern der positiven Matches
 
 			//Matches einzeichnen
-				image = drawMatches("", 1, image, image_last, descriptorsLast, descriptors, rangerPredicted, magnificationFactor);
+				image = drawMatches("", 1, image, image_last, descriptorsLast, descriptors,  magnificationFactor);
 				//Bild mit Matches abspeichern / anzeigen				
 				cv::imwrite("Image.jpg", image);
 				cv::imshow("Image.jpg", image);
