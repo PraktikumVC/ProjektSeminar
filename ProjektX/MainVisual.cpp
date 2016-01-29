@@ -637,7 +637,8 @@ cv::Mat extractNormalizedAndOrientedPatch(cv::Mat& src, cv::RotatedRect rr, cv::
 	return cropped;
 }
 
-cv::Mat drawMatches(const std::string& title, const int delay, const cv::Mat& image1, const cv::Mat& image2, const std::vector<Descriptor>& descriptors1, const std::vector<Descriptor>& descriptors2, std::vector<std::vector<uint>>& predicted, float magnificationFactor)
+cv::Mat drawMatches(const std::string& title, const int delay, const cv::Mat& image1, const cv::Mat& image2, 
+	const std::vector<Descriptor>& descriptors1, const std::vector<Descriptor>& descriptors2, float magnificationFactor)
 {
 	CV_Assert(image1.type() == image2.type() && descriptors1.size() == descriptors2.size());
 	cv::Mat drawing = cv::Mat::zeros(cv::Size(image1.cols + image2.cols, std::max(image1.rows, image2.rows)), CV_8UC3);
@@ -664,15 +665,10 @@ cv::Mat drawMatches(const std::string& title, const int delay, const cv::Mat& im
 	cv::Scalar color1 = cv::Scalar(255, 0, 0);
 	cv::Scalar color2 = cv::Scalar(0, 255, 0);
 	for (int i = 0; i < descriptors1.size(); ++i)
-		for (int j = 0; j < descriptors2.size();++j)
-		{
-			//it = std::find(predicted.at(i).begin(), predicted.at(i).end(), descriptors2.at(j));
-			//found = *it;
-			if(found>=0)
-			{
-		
+		//for (int j = 0; j < descriptors2.size();++j)
+		{		
 			rr1 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptors1[i].x, descriptors1[i].y), (cv::Mat_<float>(2, 2) << descriptors1[i].a, descriptors1[i].b, descriptors1[i].b, descriptors1[i].c), magnificationFactor);
-			rr2 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptors2[j].x, descriptors2[j].y), (cv::Mat_<float>(2, 2) << descriptors2[j].a, descriptors2[j].b, descriptors2[j].b, descriptors2[j].c), magnificationFactor);
+			rr2 = getRotatedRectFromCovarianceMatrix(cv::Point2f(descriptors2[i].x, descriptors2[i].y), (cv::Mat_<float>(2, 2) << descriptors2[i].a, descriptors2[i].b, descriptors2[i].b, descriptors2[i].c), magnificationFactor);
 			rr2.center.x = rr2.center.x + image1.cols;
 			angle1 = -rr1.angle / 180 * static_cast<float>(CV_PI);
 			angle2 = -rr2.angle / 180 * static_cast<float>(CV_PI);
@@ -684,7 +680,7 @@ cv::Mat drawMatches(const std::string& title, const int delay, const cv::Mat& im
 			cv::ellipse(drawing, rr2, color2, 1, CV_AA);
 			cv::line(drawing, rr2.center, cv::Point2f(rr2.center.x + cos(angle2) * rr2.size.width * 0.5f, rr2.center.y - sin(angle2) * rr2.size.width * 0.5f), color2, 1, CV_AA, 0);
 			//cv::putText(drawing, std::to_string(static_cast<long long>(i)), rr2.center, CV_FONT_HERSHEY_COMPLEX, 0.5, color2);
-			}
+			
 		}
 	cv::imshow(title, drawing);
 	return drawing;
@@ -697,11 +693,11 @@ std::vector<std::string> floatToString(std::vector<float> floats) {
 	return buffer;
 }
 //returns predicted NONmatches from 'descriptor' in 'descriptors' and writes matches in 'descriptors'
-std::vector<std::vector<uint>> rangerCheck(std::vector<Descriptor> descriptors1, std::vector<Descriptor> descriptors2)
+void rangerCheck(std::vector<Descriptor> descriptors1, std::vector<Descriptor> descriptors2)
 {
 	Speicher Speicher;
-	std::vector<Descriptor> rangerPredicted;
-	std::vector<std::vector<uint>> rangerMatch;
+	std::vector<Descriptor> rangerPredicted1;
+	std::vector<Descriptor> rangerPredicted2;
 	std::vector<std::string>rangerSetUp;
 	std::string speicher;
 	//construct ranger input
@@ -728,17 +724,16 @@ std::vector<std::vector<uint>> rangerCheck(std::vector<Descriptor> descriptors1,
 	rangerSetUp.clear();	
 	//fill rangerSetUp with "ranger_out.prediction"
 	rangerSetUp = Speicher.ReadText("J:\\VC\\Ranger\\", "ranger_out.prediction");
+	//cv::Mat rangerMatch= cv::Mat((rangerSetUp.size(),2),CV_64F,0.0);
 	//find "1 " in rangerSetUp and set flag
-	for (uint y = 0; y < descriptors1.size(); ++y) 
-	{
-		uint abschnitt =(rangerSetUp.size() /descriptors1.size())*(y+1);
-		for (uint k = 1; k < abschnitt; ++k)
-			//rangerPredicted hat Einträge von allen zu descriptor.at(i) passenden
-			if (rangerSetUp.at(k) == "1 ")
-				rangerMatch.at(y).push_back(k-1);
-	}
-	
-	return rangerMatch;
+	for (uint x = 0; x < rangerSetUp.size() + 1; ++x)
+		if (rangerSetUp.at(x-1) == "1")
+		{
+			rangerPredicted1.push_back(descriptors1.at(x / descriptors1.size()));
+			rangerPredicted1.push_back(descriptors2.at(x % descriptors1.size()));
+		}
+	descriptors1 = rangerPredicted1;
+	descriptors2 = rangerPredicted2;
 }
 
 int mainV(int argc, char** argv)
@@ -1078,7 +1073,7 @@ int mainV(int argc, char** argv)
 		//für jeden Detektor
 			if (image_iter > 0)
 			{
-				std::vector<std::vector<uint>>rangerPredicted;
+				cv::Mat rangerPredicted;
 				cv::Mat image = image_color;
 
 				rangerPredicted = rangerCheck(descriptorsLast, descriptors);
